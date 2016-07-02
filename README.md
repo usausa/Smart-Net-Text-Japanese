@@ -1,0 +1,1 @@
+# Smart-Text-Japanese
