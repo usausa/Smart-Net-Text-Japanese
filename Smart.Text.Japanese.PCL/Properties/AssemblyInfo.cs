@@ -1,5 +1,7 @@
-﻿using System.Reflection;
+﻿using System;
+using System.Reflection;
 using System.Resources;
+using System.Runtime.InteropServices;
 
 // アセンブリに関する一般情報は以下の属性セットをとおして制御されます。
 // アセンブリに関連付けられている情報を変更するには、
@@ -13,6 +15,10 @@ using System.Resources;
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
 [assembly: NeutralResourcesLanguage("")]
+
+[assembly: CLSCompliant(true)]
+
+[assembly: ComVisible(false)]
 
 // アセンブリのバージョン情報は次の 4 つの値で構成されています:
 //

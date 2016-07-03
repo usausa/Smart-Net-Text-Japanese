@@ -2,9 +2,13 @@
 <RuleSet Name="Smart Rules" Description="Smart Rules" ToolsVersion="14.0">
   <IncludeAll Action="Warning" />
   <Rules AnalyzerId="Microsoft.Analyzers.ManagedCodeAnalysis" RuleNamespace="Microsoft.Rules.Managed">
+    <Rule Id="CA1720" Action="None" />
     <Rule Id="CA2210" Action="None" />
   </Rules>
   <Rules AnalyzerId="StyleCop.Analyzers" RuleNamespace="StyleCop.Analyzers">
+    <Rule Id="SA1606" Action="Hidden" />
+    <Rule Id="SA1614" Action="Hidden" />
+    <Rule Id="SA1616" Action="Hidden" />
     <Rule Id="SA1633" Action="Hidden" />
     <Rule Id="SA1652" Action="Hidden" />
   </Rules>

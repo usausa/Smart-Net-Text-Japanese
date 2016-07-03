@@ -6,8 +6,10 @@
     <SharedGUID>24d811c1-ca2e-41c7-bbb0-ed36f00b6367</SharedGUID>
   </PropertyGroup>
   <PropertyGroup Label="Configuration">
-    <Import_RootNamespace>Smart.Text.Japanese</Import_RootNamespace>
+    <Import_RootNamespace>Smart</Import_RootNamespace>
   </PropertyGroup>
   <ItemGroup>
+    <Compile Include="$(MSBuildThisFileDirectory)Text\Japanese\FixedAlignment.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Text\Japanese\SjisEncoding.cs" />
   </ItemGroup>
 </Project>
