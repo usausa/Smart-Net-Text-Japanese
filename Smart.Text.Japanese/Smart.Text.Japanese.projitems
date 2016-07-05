@@ -10,6 +10,8 @@
   </PropertyGroup>
   <ItemGroup>
     <Compile Include="$(MSBuildThisFileDirectory)Text\Japanese\FixedAlignment.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Text\Japanese\KanaConverter.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Text\Japanese\KanaOption.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Text\Japanese\SjisEncoding.cs" />
   </ItemGroup>
 </Project>
