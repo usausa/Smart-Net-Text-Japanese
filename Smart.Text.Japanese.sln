@@ -9,6 +9,16 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Smart.Text.Japanese.PCL", "
 EndProject
 Project("{D954291E-2A0B-460D-934E-DC6B0785DB48}") = "Smart.Text.Japanese", "Smart.Text.Japanese\Smart.Text.Japanese.shproj", "{24D811C1-CA2E-41C7-BBB0-ED36F00B6367}"
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{36E82EC7-1E41-4FD8-8D94-27EB42B190E2}"
+	ProjectSection(SolutionItems) = preProject
+		.gitattributes = .gitattributes
+		.gitignore = .gitignore
+		README.md = README.md
+		Smart.ruleset = Smart.ruleset
+		Smart.Text.Japanese.nuspec = Smart.Text.Japanese.nuspec
+		Smart.Text.Japanese.sln.DotSettings = Smart.Text.Japanese.sln.DotSettings
+	EndProjectSection
+EndProject
 Global
 	GlobalSection(SharedMSBuildProjectFiles) = preSolution
 		Smart.Text.Japanese\Smart.Text.Japanese.projitems*{246674b0-65e2-4fb6-b6e6-3bedeb68c101}*SharedItemsImports = 4

@@ -10,6 +10,9 @@
     {
         private static readonly Lazy<Encoding> Provider = new Lazy<Encoding>(() => Encoding.GetEncoding("Shift_JIS"));
 
+        /// <summary>
+        ///
+        /// </summary>
         public static Encoding Instance => Provider.Value;
 
         /// <summary>
