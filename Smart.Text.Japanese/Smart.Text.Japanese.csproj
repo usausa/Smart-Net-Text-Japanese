@@ -5,4 +5,12 @@
     <RootNamespace>Smart</RootNamespace>
   </PropertyGroup>
 
+  <PropertyGroup>
+    <CodeAnalysisRuleSet>..\Smart.Text.Japanese.ruleset</CodeAnalysisRuleSet>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="StyleCop.Analyzers" Version="1.0.0" />
+  </ItemGroup>
+
 </Project>
