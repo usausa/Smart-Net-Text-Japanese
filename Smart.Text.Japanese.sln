@@ -1,15 +1,11 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio 14
-VisualStudioVersion = 14.0.25420.1
+# Visual Studio 15
+VisualStudioVersion = 15.0.26228.9
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Smart.Text.Japanese.NET45", "Smart.Text.Japanese.NET45\Smart.Text.Japanese.NET45.csproj", "{E0023420-CB68-4463-B9B0-564DB87BC7EC}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Smart.Text.Japanese", "Smart.Text.Japanese\Smart.Text.Japanese.csproj", "{6B91BAFB-6ED4-4A60-AE38-17048C178D45}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Smart.Text.Japanese.PCL", "Smart.Text.Japanese.PCL\Smart.Text.Japanese.PCL.csproj", "{246674B0-65E2-4FB6-B6E6-3BEDEB68C101}"
-EndProject
-Project("{D954291E-2A0B-460D-934E-DC6B0785DB48}") = "Smart.Text.Japanese", "Smart.Text.Japanese\Smart.Text.Japanese.shproj", "{24D811C1-CA2E-41C7-BBB0-ED36F00B6367}"
-EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{36E82EC7-1E41-4FD8-8D94-27EB42B190E2}"
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{6FD918EA-2DB4-4A1C-8FDD-22D416DDF4DE}"
 	ProjectSection(SolutionItems) = preProject
 		.gitattributes = .gitattributes
 		.gitignore = .gitignore
@@ -20,24 +16,15 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution 
 	EndProjectSection
 EndProject
 Global
-	GlobalSection(SharedMSBuildProjectFiles) = preSolution
-		Smart.Text.Japanese\Smart.Text.Japanese.projitems*{246674b0-65e2-4fb6-b6e6-3bedeb68c101}*SharedItemsImports = 4
-		Smart.Text.Japanese\Smart.Text.Japanese.projitems*{24d811c1-ca2e-41c7-bbb0-ed36f00b6367}*SharedItemsImports = 13
-		Smart.Text.Japanese\Smart.Text.Japanese.projitems*{e0023420-cb68-4463-b9b0-564db87bc7ec}*SharedItemsImports = 4
-	EndGlobalSection
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
 		Release|Any CPU = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
-		{E0023420-CB68-4463-B9B0-564DB87BC7EC}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{E0023420-CB68-4463-B9B0-564DB87BC7EC}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{E0023420-CB68-4463-B9B0-564DB87BC7EC}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{E0023420-CB68-4463-B9B0-564DB87BC7EC}.Release|Any CPU.Build.0 = Release|Any CPU
-		{246674B0-65E2-4FB6-B6E6-3BEDEB68C101}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{246674B0-65E2-4FB6-B6E6-3BEDEB68C101}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{246674B0-65E2-4FB6-B6E6-3BEDEB68C101}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{246674B0-65E2-4FB6-B6E6-3BEDEB68C101}.Release|Any CPU.Build.0 = Release|Any CPU
+		{6B91BAFB-6ED4-4A60-AE38-17048C178D45}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{6B91BAFB-6ED4-4A60-AE38-17048C178D45}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{6B91BAFB-6ED4-4A60-AE38-17048C178D45}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{6B91BAFB-6ED4-4A60-AE38-17048C178D45}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
