@@ -2,7 +2,7 @@
 <package xmlns="http://schemas.microsoft.com/packaging/2010/07/nuspec.xsd">
   <metadata>
     <id>Usa.Smart.Text.Japanese</id>
-    <version>1.0.1</version>
+    <version>1.1.0.0-beta</version>
     <title>Smart.Text.Japanese .NET</title>
     <authors>machi_pon</authors>
     <owners>machi_pon</owners>
@@ -13,18 +13,13 @@
     <copyright></copyright>
     <requireLicenseAcceptance>false</requireLicenseAcceptance>
     <dependencies>
+      <dependency id="NETStandard.Library" version="1.6.1" />
     </dependencies>
-    <tags>smart pcl text japanese</tags>
+    <tags>smart text japanese</tags>
   </metadata>
   <files>
-    <!-- .NET 4.5.1 -->
-    <file src="Smart.Text.Japanese.NET45\bin\Release\Smart.Text.Japanese.dll" target="lib\net451\Smart.Text.Japanese.dll" />
-    <file src="Smart.Text.Japanese.NET45\bin\Release\Smart.Text.Japanese.pdb" target="lib\net451\Smart.Text.Japanese.pdb" />
-    <file src="Smart.Text.Japanese.NET45\bin\Release\Smart.Text.Japanese.xml" target="lib\net451\Smart.Text.Japanese.xml" />
-
-    <!-- PCL -->
-    <file src="Smart.Text.Japanese.PCL\bin\Release\Smart.Text.Japanese.dll" target="lib\portable-net45+win8+wpa81\Smart.Text.Japanese.dll" />
-    <file src="Smart.Text.Japanese.PCL\bin\Release\Smart.Text.Japanese.pdb" target="lib\portable-net45+win8+wpa81\Smart.Text.Japanese.pdb" />
-    <file src="Smart.Text.Japanese.PCL\bin\Release\Smart.Text.Japanese.xml" target="lib\portable-net45+win8+wpa81\Smart.Text.Japanese.xml" />
+    <file src="Smart.Text.Japanese\bin\Release\netstandard1.1\Smart.Text.Japanese.dll" target="lib\netstandard1.1" />
+    <!--<file src="Smart.Text.Japanese\bin\Release\netstandard1.1\Smart.Text.Japanese.pdb" target="lib\netstandard1.1" />-->
+    <!--<file src="Smart.Text.Japanese\bin\Release\netstandard1.1\Smart.Text.Japanese.xml" target="lib\netstandard1.1" />-->
   </files>
 </package>
