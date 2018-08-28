@@ -189,10 +189,9 @@
             {
                 var c = src[i];
                 var next = i < src.Length - 1 ? src[i + 1] : (char)0;
-                char convert;
 
                 // Roman
-                if (isRomanToNarrow && RomanWideToNarrow.TryGetValue(c, out convert))
+                if (isRomanToNarrow && RomanWideToNarrow.TryGetValue(c, out var convert))
                 {
                     sb.Append(convert);
                     continue;
@@ -290,7 +289,7 @@
                     }
                 }
 
-                // WideHiragana/NarrowKatanaka
+                // WideHiragana/NarrowKatakana
                 if (isHiraganaToHankana)
                 {
                     if (HiraganaDakuonWideToKanaDakuonNarrow.TryGetValue(c, out convert))
