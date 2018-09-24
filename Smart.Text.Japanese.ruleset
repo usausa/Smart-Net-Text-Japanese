@@ -6,7 +6,9 @@
     <Rule Id="CA2210" Action="None" />
   </Rules>
   <Rules AnalyzerId="StyleCop.Analyzers" RuleNamespace="StyleCop.Analyzers">
+    <Rule Id="SA1101" Action="Hidden" />
     <Rule Id="SA1121" Action="Hidden" />
+    <Rule Id="SA1402" Action="Hidden" />
     <Rule Id="SA1512" Action="Hidden" />
     <Rule Id="SA1600" Action="Hidden" />
     <Rule Id="SA1602" Action="Hidden" />
