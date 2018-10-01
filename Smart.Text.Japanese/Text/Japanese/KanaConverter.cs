@@ -21,7 +21,7 @@
         private const string ToHiragana =
             "をぁぃぅぇぉゃゅょっーあいうえおかきくけこさしすせそたちつてとなにぬねのはひふへほまみむめもやゆよらりるれろわん゛゜";
 
-        public static string Convert(string src, KanaOption option)
+        public static unsafe string Convert(string src, KanaOption option)
         {
             if (String.IsNullOrEmpty(src))
             {
@@ -43,10 +43,9 @@
             var isHiraganaToHankana = (option & KanaOption.HiraganaToHankana) == KanaOption.HiraganaToHankana;
             var isHankanaToHiragana = (option & KanaOption.HankanaToHiragana) == KanaOption.HankanaToHiragana;
 
-            // TODO pool
-            // TODO unsafe
+            // TODO pool ?
             var pos = 0;
-            var buffer = new char[src.Length * 2];
+            var buffer = stackalloc char[src.Length * 2];
             for (var i = 0; i < src.Length; i++)
             {
                 var c = src[i];
@@ -147,7 +146,7 @@
         // ASCII
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        private static bool AsciiToNarrow(char c, char[] buffer, ref int pos)
+        private static unsafe bool AsciiToNarrow(char c, char* buffer, ref int pos)
         {
             // ’
             if (c == 0x2019)
@@ -255,7 +254,7 @@
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        private static bool AsciiToWide(char c, char[] buffer, ref int pos)
+        private static unsafe bool AsciiToWide(char c, char* buffer, ref int pos)
         {
             // !"#$%&'()*+,-./
             if (c < 0x0021)
@@ -311,7 +310,7 @@
         // Numeric
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        private static bool NumericToNarrow(char c, char[] buffer, ref int pos)
+        private static unsafe bool NumericToNarrow(char c, char* buffer, ref int pos)
         {
             // ０-９
             if ((c >= 0xFF10) && (c <= 0xFF19))
@@ -324,7 +323,7 @@
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        private static bool NumericToWide(char c, char[] buffer, ref int pos)
+        private static unsafe bool NumericToWide(char c, char* buffer, ref int pos)
         {
             // 0-9
             if ((c >= 0x0030) && (c <= 0x0039))
@@ -339,7 +338,7 @@
         // Roman
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        private static bool RomanToNarrow(char c, char[] buffer, ref int pos)
+        private static unsafe bool RomanToNarrow(char c, char* buffer, ref int pos)
         {
             // Ａ-Ｚ
             if (c < 0xFF21)
@@ -369,7 +368,7 @@
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        private static bool RomanToWide(char c, char[] buffer, ref int pos)
+        private static unsafe bool RomanToWide(char c, char* buffer, ref int pos)
         {
             // A-Z
             if (c < 0x0041)
@@ -401,7 +400,7 @@
         // Hiragana/Katakana
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        private static bool KatakanaToHiragana(char c, char[] buffer, ref int pos)
+        private static unsafe bool KatakanaToHiragana(char c, char* buffer, ref int pos)
         {
             // ァ-ヶ
             if (c < 0x30A1)
@@ -428,7 +427,7 @@
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        private static bool HiraganaToKatakana(char c, char[] buffer, ref int pos)
+        private static unsafe bool HiraganaToKatakana(char c, char* buffer, ref int pos)
         {
             // ぁ-ゖ
             if (c < 0x3041)
@@ -457,7 +456,7 @@
         // Hankana/Katakana
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        private static bool KatakanaToHankana(char c, char[] buffer, ref int pos)
+        private static unsafe bool KatakanaToHankana(char c, char* buffer, ref int pos)
         {
             // ァ-ヶ
             if ((c >= 0x30A1) && (c <= 0x30F6))
@@ -503,7 +502,7 @@
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        private static bool HankanaToKatakana(char c, char next, ref int index, char[] buffer, ref int pos)
+        private static unsafe bool HankanaToKatakana(char c, char next, ref int index, char* buffer, ref int pos)
         {
             if (next == 'ﾞ')
             {
@@ -572,7 +571,7 @@
         // Hankana/Hiragana
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        private static bool HiraganaToHankana(char c, char[] buffer, ref int pos)
+        private static unsafe bool HiraganaToHankana(char c, char* buffer, ref int pos)
         {
             // ァ-ヶ
             if ((c >= 0x3041) && (c <= 0x3096))
@@ -618,7 +617,7 @@
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        private static bool HankanaToHiragana(char c, char next, ref int index, char[] buffer, ref int pos)
+        private static unsafe bool HankanaToHiragana(char c, char next, ref int index, char* buffer, ref int pos)
         {
             if (next == 'ﾞ')
             {
@@ -687,7 +686,7 @@
         // Kana common
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        private static bool KanaSymbolToNarrow(char c, char[] buffer, ref int pos)
+        private static unsafe bool KanaSymbolToNarrow(char c, char* buffer, ref int pos)
         {
             if (c == 'ー')
             {
@@ -741,7 +740,7 @@
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        private static bool HankanaSymbolToWide(char c, char[] buffer, ref int pos)
+        private static unsafe bool HankanaSymbolToWide(char c, char* buffer, ref int pos)
         {
             if ((c >= 0xFF61) && (c <= 0xFF65))
             {
