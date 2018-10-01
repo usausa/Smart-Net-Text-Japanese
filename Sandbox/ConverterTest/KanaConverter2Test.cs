@@ -38,37 +38,20 @@ namespace ConverterTest
         private const string SpaceWide =
             "　";
 
-        //// Kana
-
-        //private const string KanaNarrow =
-        //    "ｧｨｩｪｫｬｭｮｯｰｱｲｳｴｵｶｷｸｹｺｻｼｽｾｿﾀﾁﾂﾃﾄﾅﾆﾇﾈﾉﾊﾋﾌﾍﾎﾏﾐﾑﾒﾓﾔﾕﾖﾗﾘﾙﾚﾛﾜｦﾝﾞﾟ";
-
-        //private const string KanaWide =
-        //    "ァィゥェォャュョッーアイウエオカキクケコサシスセソタチツテトナニヌネノハヒフヘホマミムメモヤユヨラリルレロワヲン゛゜";
-
-        //private const string HiraganaWide =
-        //    "ぁぃぅぇぉゃゅょっーあいうえおかきくけこさしすせそたちつてとなにぬねのはひふへほまみむめもやゆよらりるれろわをん゛゜";
-
-        //// KanaDakuon
-        //private const string KanaDakuonNarrow =
-        //    "ｶﾞｷﾞｸﾞｹﾞｺﾞｻﾞｼﾞｽﾞｾﾞｿﾞﾀﾞﾁﾞﾂﾞﾃﾞﾄﾞﾊﾞﾋﾞﾌﾞﾍﾞﾎﾞｳﾞﾜﾞｦﾞ";
-        //private const string KanaDakuonWide =
-        //    "ガギグゲゴザジズゼゾダヂヅデドバビブベボヴ\u30f7\u30fa";
-        //private const string HiraganaDakuonWide =
-        //    "がぎぐげござじずぜぞだぢづでどばびぶべぼヴ\u30f7\u30fa";
+        // Kana
 
         private const string Hankana =
-            "ｧｱｨｲｩｳｪｴｫｵｶｶﾞｷｷﾞｸｸﾞｹｹﾞｺｺﾞｻｻﾞｼｼﾞｽｽﾞｾｾﾞｿｿﾞﾀﾀﾞﾁﾁﾞｯﾂﾂﾞﾃﾃﾞﾄﾄﾞﾅﾆﾇﾈﾉﾊﾊﾞﾊﾟﾋﾋﾞﾋﾟﾌﾌﾞﾌﾟﾍﾍﾞﾍﾟﾎﾎﾞﾎﾟﾏﾐﾑﾒﾓｬﾔｭﾕｮﾖﾗﾘﾙﾚﾛﾜｦﾝｳﾞ" +
+            "ｧｱｨｲｩｳｪｴｫｵｶｶﾞｷｷﾞｸｸﾞｹｹﾞｺｺﾞｻｻﾞｼｼﾞｽｽﾞｾｾﾞｿｿﾞﾀﾀﾞﾁﾁﾞｯﾂﾂﾞﾃﾃﾞﾄﾄﾞﾅﾆﾇﾈﾉﾊﾊﾞﾊﾟﾋﾋﾞﾋﾟﾌﾌﾞﾌﾟﾍﾍﾞﾍﾟﾎﾎﾞﾎﾟﾏﾐﾑﾒﾓｬﾔｭﾕｮﾖﾗﾘﾙﾚﾛﾜｦﾝｳﾞﾜﾞｦﾞ" +
             "ﾞﾟｰ" +
             "｡｢｣､･";
 
         private const string Katakana =
-            "ァアィイゥウェエォオカガキギクグケゲコゴサザシジスズセゼソゾタダチヂッツヅテデトドナニヌネノハバパヒビピフブプヘベペホボポマミムメモャヤュユョヨラリルレロワヲンヴ" +
+            "ァアィイゥウェエォオカガキギクグケゲコゴサザシジスズセゼソゾタダチヂッツヅテデトドナニヌネノハバパヒビピフブプヘベペホボポマミムメモャヤュユョヨラリルレロワヲンヴ\u30F7\u30FA" +
             "゛゜ー" +
             "。「」、・";
 
         private const string Hiragana =
-            "ぁあぃいぅうぇえぉおかがきぎくぐけげこごさざしじすずせぜそぞただちぢっつづてでとどなにぬねのはばぱひびぴふぶぷへべぺほぼぽまみむめもゃやゅゆょよらりるれろわをん\u3094" +
+            "ぁあぃいぅうぇえぉおかがきぎくぐけげこごさざしじすずせぜそぞただちぢっつづてでとどなにぬねのはばぱひびぴふぶぷへべぺほぼぽまみむめもゃやゅゆょよらりるれろわをん\u3094\u30F7\u30FA" +
             "゛゜ー" +
             "。「」、・";
 
@@ -144,7 +127,14 @@ namespace ConverterTest
             Assert.Equal(Hankana, KanaConverter2.Convert(Katakana, KanaOption.KatakanaToHankana));
         }
 
-        // TODO
+        [Fact]
+        public void TestHankanaToKatakana()
+        {
+            System.Diagnostics.Debug.WriteLine(Katakana);
+            System.Diagnostics.Debug.WriteLine(KanaConverter2.Convert(Hankana, KanaOption.HankanaToKatakana));
+
+            Assert.Equal(Katakana, KanaConverter2.Convert(Hankana, KanaOption.HankanaToKatakana));
+        }
 
         // ------------------------------------------------------------
         // Hiragana/Hankana
@@ -153,13 +143,14 @@ namespace ConverterTest
         [Fact]
         public void TestHiraganaToHankana()
         {
-            System.Diagnostics.Debug.WriteLine(Hankana);
-            System.Diagnostics.Debug.WriteLine(KanaConverter2.Convert(Hiragana, KanaOption.HiraganaToHankana));
-
             Assert.Equal(Hankana, KanaConverter2.Convert(Hiragana, KanaOption.HiraganaToHankana));
         }
 
-        // TODO
+        [Fact]
+        public void TestHankanaToHiragana()
+        {
+            Assert.Equal(Hiragana, KanaConverter2.Convert(Hankana, KanaOption.HankanaToHiragana));
+        }
 
         // ------------------------------------------------------------
         // HiraganaWide/KanaWide

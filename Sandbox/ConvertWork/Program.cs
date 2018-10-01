@@ -66,22 +66,22 @@ namespace ConvertWork
 
         public static void Main(string[] args)
         {
-            Test(RomanNarrow);
-            Test(RomanWide);
-            Test(NumericNarrow);
-            Test(NumericWide);
-            Test(AsciiNarrow);
+            //Test(RomanNarrow);
+            //Test(RomanWide);
+            //Test(NumericNarrow);
+            //Test(NumericWide);
+            //Test(AsciiNarrow);
             Test(AsciiWide);
 
-            Test(KanaNarrow);
-            Test(KanaWide);
-            Test(HiraganaWide);
-            Test(KanaDakuonNarrow);
-            Test(KanaDakuonWide);
-            Test(HiraganaDakuonWide);
-            Test(KanaHandakuonNarrow);
-            Test(KanaHandakuonWide);
-            Test(HiraganaHandakuonWide);
+            //Test(KanaNarrow);
+            //Test(KanaWide);
+            //Test(HiraganaWide);
+            //Test(KanaDakuonNarrow);
+            //Test(KanaDakuonWide);
+            //Test(HiraganaDakuonWide);
+            //Test(KanaHandakuonNarrow);
+            //Test(KanaHandakuonWide);
+            //Test(HiraganaHandakuonWide);
         }
 
         private static void Test(string str)
@@ -89,19 +89,25 @@ namespace ConvertWork
             var chars = str.ToCharArray().OrderBy(x => x).ToArray();
             Debug.WriteLine("--" + new string(chars));
 
-            var split = true;
+            var start = -1;
             for (var i = 0; i < chars.Length; i++)
             {
-                if (split)
+                if (start == -1)
                 {
-                    Debug.Write(String.Format("{0:X4}({1})-", (int)chars[i], chars[i]));
-                    split = false;
+                    start = i;
                 }
 
                 if ((i == chars.Length - 1) || ((i < chars.Length - 1) && (chars[i] + 1 != chars[i + 1])))
                 {
-                    Debug.WriteLine(String.Format("{0:X4}({1})", (int)chars[i], chars[i]));
-                    split = true;
+                    var convert = new char[i - start + 1];
+                    for (var j = 0; j < convert.Length; j++)
+                    {
+                        convert[j] = chars[start + j];
+                    }
+
+                    Debug.WriteLine(new string(convert));
+
+                    start = -1;
                 }
             }
 

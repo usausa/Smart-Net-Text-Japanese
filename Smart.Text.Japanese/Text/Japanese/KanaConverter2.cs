@@ -1,112 +1,25 @@
 ﻿namespace Smart.Text.Japanese
 {
     using System;
-    using System.Collections.Generic;
-    using System.Linq;
-
     using System.Runtime.CompilerServices;
 
     public static class KanaConverter2
     {
-        // ASCII
-
-        // TODO 。、「」 の扱い
-        private const string AsciiNarrow =
-            "!\"#$%&'()*+,-./:;<=>?@[\\]^_`{|}~";
-
-        private const string AsciiWide =
-            "！”＃＄％＆’（）＊＋，－．／：；＜＝＞？＠［￥］＾＿｀｛｜｝￣";
-
         // To KanaNarrow
 
-        private const string ToKanaNarrow =
+        private const string ToHankana =
             "ｧｱｨｲｩｳｪｴｫｵｶｶｷｷｸｸｹｹｺｺｻｻｼｼｽｽｾｾｿｿﾀﾀﾁﾁｯﾂﾂﾃﾃﾄﾄﾅﾆﾇﾈﾉﾊﾊﾊﾋﾋﾋﾌﾌﾌﾍﾍﾍﾎﾎﾎﾏﾐﾑﾒﾓｬﾔｭﾕｮﾖﾗﾘﾙﾚﾛ ﾜ  ｦﾝｳ  ";
 
-        private const string ToKanaNarrowType =
+        private const string ToHankanaType =
             "           ﾞ ﾞ ﾞ ﾞ ﾞ ﾞ ﾞ ﾞ ﾞ ﾞ ﾞ ﾞ  ﾞ ﾞ ﾞ      ﾞﾟ ﾞﾟ ﾞﾟ ﾞﾟ ﾞﾟ                      ﾞ  ";
 
         // To KanaWide
 
-        // TDO
+        private const string ToKatakana =
+            "ヲァィゥェォャュョッーアイウエオカキクケコサシスセソタチツテトナニヌネノハヒフヘホマミムメモヤユヨラリルレロワン゛゜";
 
-        //// Kana
-        //private const string KanaNarrow =
-        //    "ｧｨｩｪｫｬｭｮｯｰｱｲｳｴｵｶｷｸｹｺｻｼｽｾｿﾀﾁﾂﾃﾄﾅﾆﾇﾈﾉﾊﾋﾌﾍﾎﾏﾐﾑﾒﾓﾔﾕﾖﾗﾘﾙﾚﾛﾜｦﾝﾞﾟ";
-        //private const string KanaWide =
-        //    "ァィゥェォャュョッーアイウエオカキクケコサシスセソタチツテトナニヌネノハヒフヘホマミムメモヤユヨラリルレロワヲン゛゜";
-        //private const string HiraganaWide =
-        //    "ぁぃぅぇぉゃゅょっーあいうえおかきくけこさしすせそたちつてとなにぬねのはひふへほまみむめもやゆよらりるれろわをん゛゜";
-        //// KanaDakuon
-        //private const string KanaDakuonNarrow =
-        //    "ｶｷｸｹｺｻｼｽｾｿﾀﾁﾂﾃﾄﾊﾋﾌﾍﾎｳﾜｦ";
-        //private const string KanaDakuonWide =
-        //    "ガギグゲゴザジズゼゾダヂヅデドバビブベボヴ\u30f7\u30fa";
-        //private const string HiraganaDakuonWide =
-        //    "がぎぐげござじずぜぞだぢづでどばびぶべぼヴ\u30f7\u30fa";
-        //// KanaHandakuon
-        //private const string KanaHandakuonNarrow =
-        //    "ﾊﾋﾌﾍﾎ";
-        //private const string KanaHandakuonWide =
-        //    "パピプペポ";
-        //private const string HiraganaHandakuonWide =
-        //    "ぱぴぷぺぽ";
-
-        private class Table
-        {
-            public char Start { get; }
-
-            public char End { get; }
-
-            public char[] Convert { get; }
-
-            public Table(char start, char end, char[] convert)
-            {
-                Start = start;
-                End = end;
-                Convert = convert;
-            }
-        }
-
-        // TODO T4
-
-        private static readonly Table[] AsciiToNarrowTables;
-
-        private static readonly Table[] AsciiToWideTables;
-
-        static KanaConverter2()
-        {
-            // TODO
-            AsciiToNarrowTables = CreateTables(AsciiWide, AsciiNarrow);
-            AsciiToWideTables = CreateTables(AsciiNarrow, AsciiWide);
-        }
-
-        private static Table[] CreateTables(string from, string to)
-        {
-            var chars = from.ToCharArray().OrderBy(x => x).ToArray();
-            var list = new List<Table>();
-            var start = -1;
-            for (var i = 0; i < chars.Length; i++)
-            {
-                if (start == -1)
-                {
-                    start = i;
-                }
-
-                if ((i == chars.Length - 1) || ((i < chars.Length - 1) && (chars[i] + 1 != chars[i + 1])))
-                {
-                    var convert = new char[i - start + 1];
-                    for (var j = 0; j < convert.Length; j++)
-                    {
-                        convert[j] = to[from.IndexOf(chars[start + j])];
-                    }
-
-                    list.Add(new Table(chars[start], chars[i], convert));
-                    start = -1;
-                }
-            }
-
-            return list.ToArray();
-        }
+        private const string ToHiragana =
+            "をぁぃぅぇぉゃゅょっーあいうえおかきくけこさしすせそたちつてとなにぬねのはひふへほまみむめもやゆよらりるれろわん゛゜";
 
         public static string Convert(string src, KanaOption option)
         {
@@ -125,7 +38,6 @@
             var isAsciiToWide = (option & KanaOption.AsciiToWide) == KanaOption.AsciiToWide;
             var isKatakanaToHiragana = (option & KanaOption.KatakanaToHiragana) == KanaOption.KatakanaToHiragana;
             var isHiraganaToKatakana = (option & KanaOption.HiraganaToKatakana) == KanaOption.HiraganaToKatakana;
-
             var isKatakanaToHankana = (option & KanaOption.KatakanaToHankana) == KanaOption.KatakanaToHankana;
             var isHankanaToKatakana = (option & KanaOption.HankanaToKatakana) == KanaOption.HankanaToKatakana;
             var isHiraganaToHankana = (option & KanaOption.HiraganaToHankana) == KanaOption.HiraganaToHankana;
@@ -175,12 +87,12 @@
                 }
 
                 // Ascii
-                if (isAsciiToNarrow && ConvertFromTables(AsciiToNarrowTables, c, buffer, ref pos))
+                if (isAsciiToNarrow && AsciiToNarrow(c, buffer, ref pos))
                 {
                     continue;
                 }
 
-                if (isAsciiToWide && ConvertFromTables(AsciiToWideTables, c, buffer, ref pos))
+                if (isAsciiToWide && AsciiToWide(c, buffer, ref pos))
                 {
                     continue;
                 }
@@ -197,20 +109,34 @@
                 }
 
                 // Hankana/Katakana
-                if (isKatakanaToHankana && (KatakanaToHankana(c, buffer, ref pos) || KanaSymbolToNarrow(c, buffer, ref pos)))
+                if (isKatakanaToHankana && KatakanaToHankana(c, buffer, ref pos))
                 {
                     continue;
                 }
 
-                // TODO
+                if (isHankanaToKatakana)
+                {
+                    var next = i < src.Length - 1 ? src[i + 1] : (char)0;
+                    if (HankanaToKatakana(c, next, ref i, buffer, ref pos))
+                    {
+                        continue;
+                    }
+                }
 
                 // Hankana/Hiragana
-                if (isHiraganaToHankana && (HiraganaToHankana(c, buffer, ref pos) || KanaSymbolToNarrow(c, buffer, ref pos)))
+                if (isHiraganaToHankana && HiraganaToHankana(c, buffer, ref pos))
                 {
                     continue;
                 }
 
-                // TODO
+                if (isHankanaToHiragana)
+                {
+                    var next = i < src.Length - 1 ? src[i + 1] : (char)0;
+                    if (HankanaToHiragana(c, next, ref i, buffer, ref pos))
+                    {
+                        continue;
+                    }
+                }
 
                 buffer[pos++] = c;
             }
@@ -218,21 +144,165 @@
             return new string(buffer, 0, pos);
         }
 
-        private static bool ConvertFromTables(Table[] tables, char c, char[] buffer, ref int pos)
-        {
-            for (var i = 0; i < tables.Length; i++)
-            {
-                var table = tables[i];
-                if (c < table.Start)
-                {
-                    return false;
-                }
+        // ASCII
 
-                if (c <= table.End)
-                {
-                    buffer[pos++] = table.Convert[c - table.Start];
-                    return true;
-                }
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        private static bool AsciiToNarrow(char c, char[] buffer, ref int pos)
+        {
+            // ’
+            if (c == 0x2019)
+            {
+                buffer[pos++] = '\'';
+                return true;
+            }
+
+            // ”
+            if (c == 0x201D)
+            {
+                buffer[pos++] = '"';
+                return true;
+            }
+
+            // ！
+            if (c == 0xFF01)
+            {
+                buffer[pos++] = '!';
+                return true;
+            }
+
+            // ＃＄％＆
+            if (c < 0xFF03)
+            {
+                return false;
+            }
+
+            if (c <= 0xFF06)
+            {
+                buffer[pos++] = "#$%&"[c - 0xFF03];
+                return true;
+            }
+
+            // （）＊＋，－．／
+            if (c < 0xFF08)
+            {
+                return false;
+            }
+
+            if (c <= 0xFF0F)
+            {
+                buffer[pos++] = "()*+,-./"[c - 0xFF08];
+                return true;
+            }
+
+            // ：；＜＝＞？＠
+            if (c < 0xFF1A)
+            {
+                return false;
+            }
+
+            if (c <= 0xFF20)
+            {
+                buffer[pos++] = ":;<=>?@"[c - 0xFF1A];
+                return true;
+            }
+
+            // ［
+            if (c == 0xFF3B)
+            {
+                buffer[pos++] = '[';
+                return true;
+            }
+
+            // ］＾＿｀
+            if (c < 0xFF3D)
+            {
+                return false;
+            }
+
+            if (c <= 0xFF40)
+            {
+                buffer[pos++] = "]^_`"[c - 0xFF3D];
+                return true;
+            }
+
+            // ｛｜｝
+            if (c < 0xFF5B)
+            {
+                return false;
+            }
+
+            if (c <= 0xFF5D)
+            {
+                buffer[pos++] = "{|}"[c - 0xFF5B];
+                return true;
+            }
+
+            // ￣
+            if (c == 0xFFE3)
+            {
+                buffer[pos++] = '~';
+                return true;
+            }
+
+            // ￥
+            if (c == 0xFFE5)
+            {
+                buffer[pos++] = '\\';
+                return true;
+            }
+
+            return false;
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        private static bool AsciiToWide(char c, char[] buffer, ref int pos)
+        {
+            // !"#$%&'()*+,-./
+            if (c < 0x0021)
+            {
+                return false;
+            }
+
+            if (c <= 0x002F)
+            {
+                buffer[pos++] = "！”＃＄％＆’（）＊＋，－．／"[c - 0x0021];
+                return true;
+            }
+
+            // :;<=>?@
+            if (c < 0x003A)
+            {
+                return false;
+            }
+
+            if (c <= 0x0040)
+            {
+                buffer[pos++] = "：；＜＝＞？＠"[c - 0x003A];
+                return true;
+            }
+
+            // [\]^_`
+            if (c < 0x005B)
+            {
+                return false;
+            }
+
+            if (c <= 0x0060)
+            {
+                buffer[pos++] = "［￥］＾＿｀"[c - 0x005B];
+                return true;
+            }
+
+            // {|}~
+            if (c < 0x007B)
+            {
+                return false;
+            }
+
+            if (c <= 0x007E)
+            {
+                buffer[pos++] = "｛｜｝￣"[c - 0x007B];
+                return true;
             }
 
             return false;
@@ -272,14 +342,24 @@
         private static bool RomanToNarrow(char c, char[] buffer, ref int pos)
         {
             // Ａ-Ｚ
-            if ((c >= 0xFF21) && (c <= 0xFF3A))
+            if (c < 0xFF21)
+            {
+                return false;
+            }
+
+            if (c <= 0xFF3A)
             {
                 buffer[pos++] = (char)(c - 0xFF21 + 0x0041);    // TODO 事前計算
                 return true;
             }
 
             // ａ-ｚ
-            if ((c >= 0xFF41) && (c <= 0xFF5A))
+            if (c < 0xFF41)
+            {
+                return false;
+            }
+
+            if (c <= 0xFF5A)
             {
                 buffer[pos++] = (char)(c - 0xFF41 + 0x0061);    // TODO 事前計算
                 return true;
@@ -292,14 +372,24 @@
         private static bool RomanToWide(char c, char[] buffer, ref int pos)
         {
             // A-Z
-            if ((c >= 0x0041) && (c <= 0x005A))
+            if (c < 0x0041)
+            {
+                return false;
+            }
+
+            if (c <= 0x005A)
             {
                 buffer[pos++] = (char)(c - 0x0041 + 0xFF21);    // TODO 事前計算
                 return true;
             }
 
             // a-z
-            if ((c >= 0x0061) && (c <= 0x007A))
+            if (c < 0x0061)
+            {
+                return false;
+            }
+
+            if (c <= 0x007A)
             {
                 buffer[pos++] = (char)(c - 0x0061 + 0xFF41);    // TODO 事前計算
                 return true;
@@ -308,20 +398,24 @@
             return false;
         }
 
-        // TODO kana narrow, wide
-
         // Hiragana/Katakana
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         private static bool KatakanaToHiragana(char c, char[] buffer, ref int pos)
         {
             // ァ-ヶ
-            if ((c >= 0x30A1) && (c <= 0x30F6))
+            if (c < 0x30A1)
+            {
+                return false;
+            }
+
+            if (c <= 0x30F6)
             {
                 buffer[pos++] = (char)(c - 0x30A1 + 0x3041);    // TODO 事前計算
                 return true;
             }
 
+            // 踊り字
             if ((c == 0x30FD) || (c == 0x30FE))
             {
                 buffer[pos++] = (char)(c - 0x30FD + 0x309D);    // TODO 事前計算
@@ -337,12 +431,18 @@
         private static bool HiraganaToKatakana(char c, char[] buffer, ref int pos)
         {
             // ぁ-ゖ
-            if ((c >= 0x3041) && (c <= 0x3096))
+            if (c < 0x3041)
+            {
+                return false;
+            }
+
+            if (c <= 0x3096)
             {
                 buffer[pos++] = (char)(c - 0x3041 + 0x30A1);    // TODO 事前計算
                 return true;
             }
 
+            // 踊り字
             if ((c == 0x309D) || (c == 0x309E))
             {
                 buffer[pos++] = (char)(c - 0x309D + 0x30FD);    // TODO 事前計算
@@ -364,7 +464,7 @@
             {
                 var index = c - 0x30A1;
 
-                var c1 = ToKanaNarrow[index];
+                var c1 = ToHankana[index];
                 if (c1 != ' ')
                 {
                     buffer[pos++] = c1;
@@ -374,7 +474,7 @@
                     buffer[pos++] = c;
                 }
 
-                var c2 = ToKanaNarrowType[index];
+                var c2 = ToHankanaType[index];
                 if (c2 != ' ')
                 {
                     buffer[pos++] = c2;
@@ -383,12 +483,91 @@
                 return true;
             }
 
-            // TODO 記号
+            // ワ
+            if (c == 0x30F7)
+            {
+                buffer[pos++] = 'ﾜ';
+                buffer[pos++] = 'ﾞ';
+                return true;
+            }
 
-            return false;
+            // ヲ
+            if (c == 0x30FA)
+            {
+                buffer[pos++] = 'ｦ';
+                buffer[pos++] = 'ﾞ';
+                return true;
+            }
+
+            return KanaSymbolToNarrow(c, buffer, ref pos);
         }
 
-        // TODO
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        private static bool HankanaToKatakana(char c, char next, ref int index, char[] buffer, ref int pos)
+        {
+            if (next == 'ﾞ')
+            {
+                // ｶ-ﾄ
+                if ((c >= 0xFF76) && (c <= 0xFF84))
+                {
+                    buffer[pos++] = "ガギグゲゴザジズゼゾダヂヅデド"[c - 0xFF76];
+                    index++;
+                    return true;
+                }
+
+                // ﾊ-ﾎ
+                if ((c >= 0xFF8A) && (c <= 0xFF8E))
+                {
+                    buffer[pos++] = "バビブベボ"[c - 0xFF8A];
+                    index++;
+                    return true;
+                }
+
+                // ｳ
+                if (c == 0xFF73)
+                {
+                    buffer[pos++] = 'ヴ';
+                    index++;
+                    return true;
+                }
+
+                // ﾜ
+                if (c == 0xFF9C)
+                {
+                    buffer[pos++] = '\u30f7';
+                    index++;
+                    return true;
+                }
+
+                // ｦ
+                if (c == 0xFF66)
+                {
+                    buffer[pos++] = '\u30fa';
+                    index++;
+                    return true;
+                }
+            }
+
+            if (next == 'ﾟ')
+            {
+                // ﾊ-ﾎ
+                if ((c >= 0xFF8A) && (c <= 0xFF8E))
+                {
+                    buffer[pos++] = "パピプペポ"[c - 0xFF8A];
+                    index++;
+                    return true;
+                }
+            }
+
+            // ｦ-ﾟ
+            if ((c >= 0xFF66) & (c <= 0xFF9F))
+            {
+                buffer[pos++] = ToKatakana[c - 0xFF66];
+                return true;
+            }
+
+            return HankanaSymbolToWide(c, buffer, ref pos);
+        }
 
         // Hankana/Hiragana
 
@@ -400,7 +579,7 @@
             {
                 var index = c - 0x3041;
 
-                var c1 = ToKanaNarrow[index];
+                var c1 = ToHankana[index];
                 if (c1 != ' ')
                 {
                     buffer[pos++] = c1;
@@ -410,7 +589,7 @@
                     buffer[pos++] = c;
                 }
 
-                var c2 = ToKanaNarrowType[index];
+                var c2 = ToHankanaType[index];
                 if (c2 != ' ')
                 {
                     buffer[pos++] = c2;
@@ -419,43 +598,93 @@
                 return true;
             }
 
-            // TODO 記号
+            // ワ(ひらがなオプションでも実行)
+            if (c == 0x30F7)
+            {
+                buffer[pos++] = 'ﾜ';
+                buffer[pos++] = 'ﾞ';
+                return true;
+            }
 
-            return false;
+            // ヲ(ひらがなオプションでも実行)
+            if (c == 0x30FA)
+            {
+                buffer[pos++] = 'ｦ';
+                buffer[pos++] = 'ﾞ';
+                return true;
+            }
+
+            return KanaSymbolToNarrow(c, buffer, ref pos);
         }
-
-        // TODO
-
-        // Kana common
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        private static bool HankanaSymbolToWide(char c, char[] buffer, ref int pos)
+        private static bool HankanaToHiragana(char c, char next, ref int index, char[] buffer, ref int pos)
         {
-            if (c == 'ｰ')
+            if (next == 'ﾞ')
             {
-                buffer[pos++] = 'ー';
+                // ｶ-ﾄ
+                if ((c >= 0xFF76) && (c <= 0xFF84))
+                {
+                    buffer[pos++] = "がぎぐげござじずぜぞだぢづでど"[c - 0xFF76];
+                    index++;
+                    return true;
+                }
+
+                // ﾊ-ﾎ
+                if ((c >= 0xFF8A) && (c <= 0xFF8E))
+                {
+                    buffer[pos++] = "ばびぶべぼ"[c - 0xFF8A];
+                    index++;
+                    return true;
+                }
+
+                // ｳ
+                if (c == 0xFF73)
+                {
+                    buffer[pos++] = '\u3094';
+                    index++;
+                    return true;
+                }
+
+                // ﾜ(カタカナへ変換)
+                if (c == 0xFF9C)
+                {
+                    buffer[pos++] = '\u30f7';
+                    index++;
+                    return true;
+                }
+
+                // ｦ(カタカナへ変換)
+                if (c == 0xFF66)
+                {
+                    buffer[pos++] = '\u30fa';
+                    index++;
+                    return true;
+                }
+            }
+
+            if (next == 'ﾟ')
+            {
+                // ﾊ-ﾎ
+                if ((c >= 0xFF8A) && (c <= 0xFF8E))
+                {
+                    buffer[pos++] = "ぱぴぷぺぽ"[c - 0xFF8A];
+                    index++;
+                    return true;
+                }
+            }
+
+            // ｦ-ﾟ
+            if ((c >= 0xFF66) & (c <= 0xFF9F))
+            {
+                buffer[pos++] = ToHiragana[c - 0xFF66];
                 return true;
             }
 
-            if ((c >= 0xFF61) && (c <= 0xFF65))
-            {
-                buffer[pos++] = "。「」、・"[c - 0xFF61];
-            }
-
-            if (c == 'ﾞ')
-            {
-                buffer[pos++] = '゛';
-                return true;
-            }
-
-            if (c == 'ﾟ')
-            {
-                buffer[pos++] = '゜';
-                return true;
-            }
-
-            return false;
+            return HankanaSymbolToWide(c, buffer, ref pos);
         }
+
+        // Kana common
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         private static bool KanaSymbolToNarrow(char c, char[] buffer, ref int pos)
@@ -505,6 +734,18 @@
             if (c == '゜')
             {
                 buffer[pos++] = 'ﾟ';
+                return true;
+            }
+
+            return false;
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        private static bool HankanaSymbolToWide(char c, char[] buffer, ref int pos)
+        {
+            if ((c >= 0xFF61) && (c <= 0xFF65))
+            {
+                buffer[pos++] = "。「」、・"[c - 0xFF61];
                 return true;
             }
 
