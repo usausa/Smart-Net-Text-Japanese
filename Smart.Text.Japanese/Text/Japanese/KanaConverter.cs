@@ -316,7 +316,7 @@
             // ０-９
             if ((c >= 0xFF10) && (c <= 0xFF19))
             {
-                buffer[pos++] = (char)(c - 0xFF10 + 0x0030);    // TODO 事前計算
+                buffer[pos++] = (char)(c - 0xFEE0);
                 return true;
             }
 
@@ -329,7 +329,7 @@
             // 0-9
             if ((c >= 0x0030) && (c <= 0x0039))
             {
-                buffer[pos++] = (char)(c - 0x0030 + 0xFF10);    // TODO 事前計算
+                buffer[pos++] = (char)(c + 0xFEE0);
                 return true;
             }
 
@@ -349,7 +349,7 @@
 
             if (c <= 0xFF3A)
             {
-                buffer[pos++] = (char)(c - 0xFF21 + 0x0041);    // TODO 事前計算
+                buffer[pos++] = (char)(c - 0xFEE0);
                 return true;
             }
 
@@ -361,7 +361,7 @@
 
             if (c <= 0xFF5A)
             {
-                buffer[pos++] = (char)(c - 0xFF41 + 0x0061);    // TODO 事前計算
+                buffer[pos++] = (char)(c - 0xFEE0);
                 return true;
             }
 
@@ -379,7 +379,7 @@
 
             if (c <= 0x005A)
             {
-                buffer[pos++] = (char)(c - 0x0041 + 0xFF21);    // TODO 事前計算
+                buffer[pos++] = (char)(c + 0xFEE0);
                 return true;
             }
 
@@ -391,7 +391,7 @@
 
             if (c <= 0x007A)
             {
-                buffer[pos++] = (char)(c - 0x0061 + 0xFF41);    // TODO 事前計算
+                buffer[pos++] = (char)(c + 0xFEE0);
                 return true;
             }
 
@@ -411,14 +411,14 @@
 
             if (c <= 0x30F6)
             {
-                buffer[pos++] = (char)(c - 0x30A1 + 0x3041);    // TODO 事前計算
+                buffer[pos++] = (char)(c - 0x0060);
                 return true;
             }
 
             // 踊り字
             if ((c == 0x30FD) || (c == 0x30FE))
             {
-                buffer[pos++] = (char)(c - 0x30FD + 0x309D);    // TODO 事前計算
+                buffer[pos++] = (char)(c - 0x0060);
                 return true;
             }
 
@@ -438,14 +438,14 @@
 
             if (c <= 0x3096)
             {
-                buffer[pos++] = (char)(c - 0x3041 + 0x30A1);    // TODO 事前計算
+                buffer[pos++] = (char)(c + 0x0060);
                 return true;
             }
 
             // 踊り字
             if ((c == 0x309D) || (c == 0x309E))
             {
-                buffer[pos++] = (char)(c - 0x309D + 0x30FD);    // TODO 事前計算
+                buffer[pos++] = (char)(c + 0x0060);
                 return true;
             }
 

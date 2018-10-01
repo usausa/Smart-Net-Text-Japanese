@@ -55,6 +55,12 @@ namespace ConverterTest
             "JK[" +
             "BuvAE";
 
+        private const string KatakanaOdoriji =
+            "RS";
+
+        private const string HiraganaOdoriji =
+            "TU";
+
         // todo defaultˆø”‚Â‚«‚Ì‡Œv•¶š—ñì¬A‚¢‚­‚Â‚©
 
         // ------------------------------------------------------------
@@ -130,9 +136,6 @@ namespace ConverterTest
         [Fact]
         public void TestHankanaToKatakana()
         {
-            System.Diagnostics.Debug.WriteLine(Katakana);
-            System.Diagnostics.Debug.WriteLine(KanaConverter.Convert(Hankana, KanaOption.HankanaToKatakana));
-
             Assert.Equal(Katakana, KanaConverter.Convert(Hankana, KanaOption.HankanaToKatakana));
         }
 
@@ -160,12 +163,14 @@ namespace ConverterTest
         public void TestKatakanaToHiragana()
         {
             Assert.Equal(Hiragana, KanaConverter.Convert(Katakana, KanaOption.KatakanaToHiragana));
+            Assert.Equal(HiraganaOdoriji, KanaConverter.Convert(KatakanaOdoriji, KanaOption.KatakanaToHiragana));
         }
 
         [Fact]
         public void TestHiraganaToKatakana()
         {
             Assert.Equal(Katakana, KanaConverter.Convert(Hiragana, KanaOption.HiraganaToKatakana));
+            Assert.Equal(KatakanaOdoriji, KanaConverter.Convert(HiraganaOdoriji, KanaOption.HiraganaToKatakana));
         }
     }
 }
