@@ -81,11 +81,11 @@
         /// <summary>
         ///
         /// </summary>
-        Wide = RomanToWide | NumericToWide | AsciiToNarrow | KatakanaToHankana,
+        Wide = RomanToWide | NumericToWide | AsciiToWide | SpaceToWide | HankanaToKatakana,
 
         /// <summary>
         ///
         /// </summary>
-        Narrow = RomanToNarrow | NumericToNarrow | AsciiToNarrow | HankanaToKatakana,
+        Narrow = RomanToNarrow | NumericToNarrow | AsciiToNarrow | SpaceToNarrow | KatakanaToHankana
     }
 }

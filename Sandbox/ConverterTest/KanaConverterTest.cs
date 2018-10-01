@@ -61,6 +61,12 @@ namespace ConverterTest
         private const string HiraganaOdoriji =
             "ÅTÅU";
 
+        // All
+
+        private const string Narrow = RomanNarrow + NumericNarrow + AsciiNarrow + SpaceNarrow + Hankana;
+
+        private const string Wide = RomanWide + NumericWide + AsciiWide + SpaceWide + Katakana;
+
         // ------------------------------------------------------------
         // Ascii
         // ------------------------------------------------------------
@@ -169,6 +175,22 @@ namespace ConverterTest
         {
             Assert.Equal(Katakana, KanaConverter.Convert(Hiragana, KanaOption.HiraganaToKatakana));
             Assert.Equal(KatakanaOdoriji, KanaConverter.Convert(HiraganaOdoriji, KanaOption.HiraganaToKatakana));
+        }
+
+        // ------------------------------------------------------------
+        // All
+        // ------------------------------------------------------------
+
+        [Fact]
+        public void TestToNarrow()
+        {
+            Assert.Equal(Narrow, KanaConverter.Convert(Wide, KanaOption.Narrow));
+        }
+
+        [Fact]
+        public void TestToWide()
+        {
+            Assert.Equal(Wide, KanaConverter.Convert(Narrow, KanaOption.Wide));
         }
     }
 }
