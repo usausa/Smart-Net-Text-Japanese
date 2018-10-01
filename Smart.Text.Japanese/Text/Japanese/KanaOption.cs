@@ -51,12 +51,12 @@
         /// <summary>
         /// k
         /// </summary>
-        KanaToNarrow = 0x00010000,
+        KatakanaToHankana = 0x00010000,
 
         /// <summary>
         /// K
         /// </summary>
-        KanaToWide = 0x00020000,
+        HankanaToKatakana = 0x00020000,
 
         /// <summary>
         /// h
@@ -81,11 +81,11 @@
         /// <summary>
         ///
         /// </summary>
-        Wide = RomanToWide | NumericToWide | AsciiToNarrow | KanaToWide,
+        Wide = RomanToWide | NumericToWide | AsciiToNarrow | KatakanaToHankana,
 
         /// <summary>
         ///
         /// </summary>
-        Narrow = RomanToNarrow | NumericToNarrow | AsciiToNarrow | KanaToNarrow,
+        Narrow = RomanToNarrow | NumericToNarrow | AsciiToNarrow | HankanaToKatakana,
     }
 }

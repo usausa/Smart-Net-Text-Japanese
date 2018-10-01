@@ -177,8 +177,8 @@
             var isAsciiToWide = (option & KanaOption.AsciiToWide) == KanaOption.AsciiToWide;
             var isSpaceToNarrow = (option & KanaOption.SpaceToNarrow) == KanaOption.SpaceToNarrow;
             var isSpaceToWide = (option & KanaOption.SpaceToWide) == KanaOption.SpaceToWide;
-            var isKanaToNarrow = (option & KanaOption.KanaToNarrow) == KanaOption.KanaToNarrow;
-            var isKanaToWide = (option & KanaOption.KanaToWide) == KanaOption.KanaToWide;
+            var isKatakanaToHankana = (option & KanaOption.KatakanaToHankana) == KanaOption.KatakanaToHankana;
+            var isHankanaToKatakana = (option & KanaOption.HankanaToKatakana) == KanaOption.HankanaToKatakana;
             var isHiraganaToHankana = (option & KanaOption.HiraganaToHankana) == KanaOption.HiraganaToHankana;
             var isHankanaToHiragana = (option & KanaOption.HankanaToHiragana) == KanaOption.HankanaToHiragana;
             var isKatakanaToHiragana = (option & KanaOption.KatakanaToHiragana) == KanaOption.KatakanaToHiragana;
@@ -243,7 +243,7 @@
                 }
 
                 // WideKatakana/NarrowKatakana
-                if (isKanaToNarrow)
+                if (isKatakanaToHankana)
                 {
                     if (KanaDakuonWideToKanaDakuonNarrow.TryGetValue(c, out convert))
                     {
@@ -266,7 +266,7 @@
                     }
                 }
 
-                if (isKanaToWide)
+                if (isHankanaToKatakana)
                 {
                     if ((next == 'ﾞ') && KanaDakuonNarrowToKanaDakuonWide.TryGetValue(c, out convert))
                     {
