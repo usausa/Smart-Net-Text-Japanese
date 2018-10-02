@@ -15,6 +15,10 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution 
 		Smart.Text.Japanese.sln.DotSettings = Smart.Text.Japanese.sln.DotSettings
 	EndProjectSection
 EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Smart.Text.Japanese.Tests", "Smart.Text.Japanese.Tests\Smart.Text.Japanese.Tests.csproj", "{2DEDC416-1045-4818-B53B-D7EC7369B128}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Smart.Text.Japanese.Benchmark", "Smart.Text.Japanese.Benchmark\Smart.Text.Japanese.Benchmark.csproj", "{01900219-FE5B-4EB3-982B-1634FBB3C562}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -25,8 +29,19 @@ Global
 		{6B91BAFB-6ED4-4A60-AE38-17048C178D45}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{6B91BAFB-6ED4-4A60-AE38-17048C178D45}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{6B91BAFB-6ED4-4A60-AE38-17048C178D45}.Release|Any CPU.Build.0 = Release|Any CPU
+		{2DEDC416-1045-4818-B53B-D7EC7369B128}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{2DEDC416-1045-4818-B53B-D7EC7369B128}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{2DEDC416-1045-4818-B53B-D7EC7369B128}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{2DEDC416-1045-4818-B53B-D7EC7369B128}.Release|Any CPU.Build.0 = Release|Any CPU
+		{01900219-FE5B-4EB3-982B-1634FBB3C562}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{01900219-FE5B-4EB3-982B-1634FBB3C562}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{01900219-FE5B-4EB3-982B-1634FBB3C562}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{01900219-FE5B-4EB3-982B-1634FBB3C562}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {E79A8C4A-EA21-4BD9-85F3-29B9827A1297}
 	EndGlobalSection
 EndGlobal

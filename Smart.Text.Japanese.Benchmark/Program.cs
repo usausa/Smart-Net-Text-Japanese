@@ -1,4 +1,4 @@
-﻿namespace ConverterBenchmark
+﻿namespace Smart.Text.Japanese.Benchmark
 {
     using BenchmarkDotNet.Attributes;
     using BenchmarkDotNet.Configs;

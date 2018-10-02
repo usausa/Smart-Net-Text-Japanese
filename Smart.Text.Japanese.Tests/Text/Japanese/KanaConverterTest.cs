@@ -1,7 +1,5 @@
-namespace ConverterTest
+namespace Smart.Text.Japanese
 {
-    using Smart.Text.Japanese;
-
     using Xunit;
 
     public class KanaConverterTest

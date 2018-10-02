@@ -43,7 +43,6 @@
             var isHiraganaToHankana = (option & KanaOption.HiraganaToHankana) == KanaOption.HiraganaToHankana;
             var isHankanaToHiragana = (option & KanaOption.HankanaToHiragana) == KanaOption.HankanaToHiragana;
 
-            // TODO pool ?
             var pos = 0;
             var buffer = stackalloc char[src.Length * 2];
             for (var i = 0; i < src.Length; i++)
