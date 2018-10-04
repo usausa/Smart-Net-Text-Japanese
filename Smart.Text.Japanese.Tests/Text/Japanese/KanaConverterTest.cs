@@ -158,7 +158,7 @@ namespace Smart.Text.Japanese
         }
 
         // ------------------------------------------------------------
-        // HiraganaWide/KanaWide
+        // HiraganaWide/KatakanaWide
         // ------------------------------------------------------------
 
         [Fact]

@@ -66,7 +66,7 @@
 
             if (bytes.Length > length)
             {
-                // 切り捨て
+                // Truncate
                 var newBytes = new byte[length];
                 if (((bytes[length - 1] >= 0x81) && (bytes[length - 1] <= 0x9f)) ||
                     ((bytes[length - 1] >= 0xe0) && (bytes[length - 1] <= 0xfc)))
@@ -83,7 +83,7 @@
             }
             else
             {
-                // パディング
+                // Padding
                 var newBytes = new byte[length];
                 if (alignment == FixedAlignment.Left)
                 {
