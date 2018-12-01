@@ -88,7 +88,7 @@
                 if (alignment == FixedAlignment.Left)
                 {
                     Buffer.BlockCopy(bytes, 0, newBytes, 0, bytes.Length);
-                    for (var i = bytes.Length; i < length; i++)
+                    for (var i = bytes.Length; i < newBytes.Length; i++)
                     {
                         newBytes[i] = padding;
                     }
@@ -96,7 +96,7 @@
                 else if (alignment == FixedAlignment.Right)
                 {
                     var i = 0;
-                    for (; i < length - bytes.Length; i++)
+                    for (; i < newBytes.Length - bytes.Length; i++)
                     {
                         newBytes[i] = padding;
                     }
@@ -106,13 +106,13 @@
                 else
                 {
                     var i = 0;
-                    for (; i < (length - bytes.Length) / 2; i++)
+                    for (; i < (newBytes.Length - bytes.Length) / 2; i++)
                     {
                         newBytes[i] = padding;
                     }
 
                     Buffer.BlockCopy(bytes, 0, newBytes, i, bytes.Length);
-                    for (i = i + bytes.Length; i < length; i++)
+                    for (i = i + bytes.Length; i < newBytes.Length; i++)
                     {
                         newBytes[i] = padding;
                     }
