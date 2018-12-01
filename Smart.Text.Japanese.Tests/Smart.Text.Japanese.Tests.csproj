@@ -6,7 +6,7 @@
     <IsPackable>false</IsPackable>
     <CodeAnalysisRuleSet>..\Smart.Text.Japanese.ruleset</CodeAnalysisRuleSet>
     <RootNamespace>Smart</RootNamespace>
-    <Version>1.4.0</Version>
+    <Version>1.4.1</Version>
   </PropertyGroup>
 
   <ItemGroup>

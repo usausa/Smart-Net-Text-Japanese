@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <package xmlns="http://schemas.microsoft.com/packaging/2010/07/nuspec.xsd">
-  <metadata>
+  <metadata minClientVersion="2.12">
     <id>Usa.Smart.Text.Japanese</id>
-    <version>1.4.0</version>
+    <version>1.4.1</version>
     <title>Smart.Text.Japanese .NET</title>
     <authors>machi_pon</authors>
     <owners>machi_pon</owners>
@@ -10,6 +10,7 @@
     <releaseNotes></releaseNotes>
     <summary>Smart japanese text library for .NET</summary>
     <projectUrl>https://github.com/usausa/Smart-Net-Text-Japanese</projectUrl>
+    <repository type="git" url="https://github.com/usausa/Smart-Net-Text-Japanese" />
     <copyright></copyright>
     <requireLicenseAcceptance>false</requireLicenseAcceptance>
     <dependencies>
