@@ -11,9 +11,9 @@
 
     public static class Program
     {
-        public static void Main(string[] args)
+        public static void Main()
         {
-            BenchmarkRunner.Run<Benchmark>();
+            BenchmarkRunner.Run<ConvertBenchmark>();
         }
     }
 
@@ -27,8 +27,9 @@
         }
     }
 
+#pragma warning disable CA1822 // Mark members as static
     [Config(typeof(BenchmarkConfig))]
-    public class Benchmark
+    public class ConvertBenchmark
     {
         // length 214
 
@@ -62,4 +63,5 @@
             KanaConverter.Convert(Wide, KanaOption.Narrow);
         }
     }
+#pragma warning restore CA1822 // Mark members as static
 }

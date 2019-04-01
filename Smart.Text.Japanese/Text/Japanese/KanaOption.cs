@@ -2,90 +2,45 @@
 {
     using System;
 
-    /// <summary>
-    ///
-    /// </summary>
     [Flags]
     public enum KanaOption
     {
-        /// <summary>
-        /// r
-        /// </summary>
+        // r
         RomanToNarrow = 0x00000001,
-
-        /// <summary>
-        /// R
-        /// </summary>
+        // R
         RomanToWide = 0x00000002,
 
-        /// <summary>
-        /// n
-        /// </summary>
+        // n
         NumericToNarrow = 0x00000010,
-
-        /// <summary>
-        /// N
-        /// </summary>
+        // N
         NumericToWide = 0x00000020,
 
-        /// <summary>
-        /// a
-        /// </summary>
+        // a
         AsciiToNarrow = 0x00000100,
-
-        /// <summary>
-        /// A
-        /// </summary>
+        // A
         AsciiToWide = 0x00000200,
 
-        /// <summary>
-        /// s
-        /// </summary>
+        // s
         SpaceToNarrow = 0x00001000,
-
-        /// <summary>
-        /// S
-        /// </summary>
+        // S
         SpaceToWide = 0x00002000,
 
-        /// <summary>
-        /// k
-        /// </summary>
+        // k
         KatakanaToHankana = 0x00010000,
-
-        /// <summary>
-        /// K
-        /// </summary>
+        // K
         HankanaToKatakana = 0x00020000,
 
-        /// <summary>
-        /// h
-        /// </summary>
+        // h
         HiraganaToHankana = 0x00100000,
-
-        /// <summary>
-        /// H
-        /// </summary>
+        // H
         HankanaToHiragana = 0x00200000,
 
-        /// <summary>
-        /// c
-        /// </summary>
+        // c
         KatakanaToHiragana = 0x01000000,
-
-        /// <summary>
-        /// C
-        /// </summary>
+        // C
         HiraganaToKatakana = 0x02000000,
 
-        /// <summary>
-        ///
-        /// </summary>
         Wide = RomanToWide | NumericToWide | AsciiToWide | SpaceToWide | HankanaToKatakana,
-
-        /// <summary>
-        ///
-        /// </summary>
         Narrow = RomanToNarrow | NumericToNarrow | AsciiToNarrow | SpaceToNarrow | KatakanaToHankana
     }
 }
