@@ -27,7 +27,7 @@
         }
     }
 
-#pragma warning disable CA1822 // Mark members as static
+    [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Performance", "CA1822:MarkMembersAsStatic", Justification = "Ignore")]
     [Config(typeof(BenchmarkConfig))]
     public class ConvertBenchmark
     {
@@ -63,5 +63,4 @@
             KanaConverter.Convert(Wide, KanaOption.Narrow);
         }
     }
-#pragma warning restore CA1822 // Mark members as static
 }
