@@ -1,4 +1,4 @@
-namespace Smart.Text.Japanese
+﻿namespace Smart.Text.Japanese
 {
     using Xunit;
 
@@ -10,7 +10,7 @@ namespace Smart.Text.Japanese
             "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz";
 
         private const string RomanWide =
-            "�`�a�b�c�d�e�f�g�h�i�j�k�l�m�n�o�p�q�r�s�t�u�v�w�x�y����������������������������������������������������";
+            "ＡＢＣＤＥＦＧＨＩＪＫＬＭＮＯＰＱＲＳＴＵＶＷＸＹＺａｂｃｄｅｆｇｈｉｊｋｌｍｎｏｐｑｒｓｔｕｖｗｘｙｚ";
 
         // Numeric
 
@@ -18,7 +18,7 @@ namespace Smart.Text.Japanese
             "0123456789";
 
         private const string NumericWide =
-            "�O�P�Q�R�S�T�U�V�W�X";
+            "０１２３４５６７８９";
 
         // ASCII
 
@@ -26,7 +26,7 @@ namespace Smart.Text.Japanese
             "!\"#$%&'()*+,-./:;<=>?@[\\]^_`{|}~";
 
         private const string AsciiWide =
-            "�I�h���������f�i�j���{�C�|�D�^�F�G�������H���m���n�O�Q�M�o�b�p�P";
+            "！”＃＄％＆’（）＊＋，－．／：；＜＝＞？＠［￥］＾＿｀｛｜｝￣";
 
         // Space
 
@@ -34,30 +34,30 @@ namespace Smart.Text.Japanese
             " ";
 
         private const string SpaceWide =
-            "�@";
+            "　";
 
         // Kana
 
         private const string Hankana =
-            "������������޷�޸�޹�޺�޻�޼�޽�޾�޿�������ޯ�������������������������������������������Ӭԭծ������ܦݳ��ަ�" +
-            "�߰" +
-            "�����";
+            "ｧｱｨｲｩｳｪｴｫｵｶｶﾞｷｷﾞｸｸﾞｹｹﾞｺｺﾞｻｻﾞｼｼﾞｽｽﾞｾｾﾞｿｿﾞﾀﾀﾞﾁﾁﾞｯﾂﾂﾞﾃﾃﾞﾄﾄﾞﾅﾆﾇﾈﾉﾊﾊﾞﾊﾟﾋﾋﾞﾋﾟﾌﾌﾞﾌﾟﾍﾍﾞﾍﾟﾎﾎﾞﾎﾟﾏﾐﾑﾒﾓｬﾔｭﾕｮﾖﾗﾘﾙﾚﾛﾜｦﾝｳﾞﾜﾞｦﾞ" +
+            "ﾞﾟｰ" +
+            "｡｢｣､･";
 
         private const string Katakana =
-            "�@�A�B�C�D�E�F�G�H�I�J�K�L�M�N�O�P�Q�R�S�T�U�V�W�X�Y�Z�[�\�]�^�_�`�a�b�c�d�e�f�g�h�i�j�k�l�m�n�o�p�q�r�s�t�u�v�w�x�y�z�{�|�}�~������������������������������������\u30F7\u30FA" +
-            "�J�K�[" +
-            "�B�u�v�A�E";
+            "ァアィイゥウェエォオカガキギクグケゲコゴサザシジスズセゼソゾタダチヂッツヅテデトドナニヌネノハバパヒビピフブプヘベペホボポマミムメモャヤュユョヨラリルレロワヲンヴ\u30F7\u30FA" +
+            "゛゜ー" +
+            "。「」、・";
 
         private const string Hiragana =
-            "�����������������������������������������������������������������������ÂĂłƂǂȂɂʂ˂̂͂΂ςЂт҂ӂԂՂւׂ؂قڂۂ܂݂ނ߂�����������������\u3094\u30F7\u30FA" +
-            "�J�K�[" +
-            "�B�u�v�A�E";
+            "ぁあぃいぅうぇえぉおかがきぎくぐけげこごさざしじすずせぜそぞただちぢっつづてでとどなにぬねのはばぱひびぴふぶぷへべぺほぼぽまみむめもゃやゅゆょよらりるれろわをん\u3094\u30F7\u30FA" +
+            "゛゜ー" +
+            "。「」、・";
 
         private const string KatakanaOdoriji =
-            "�R�S";
+            "ヽヾ";
 
         private const string HiraganaOdoriji =
-            "�T�U";
+            "ゝゞ";
 
         // All
 
