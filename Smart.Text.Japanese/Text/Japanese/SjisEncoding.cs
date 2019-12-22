@@ -1,4 +1,4 @@
-﻿namespace Smart.Text.Japanese
+namespace Smart.Text.Japanese
 {
     using System;
     using System.Collections.Generic;
@@ -81,7 +81,7 @@
                     }
 
                     Buffer.BlockCopy(bytes, 0, newBytes, i, bytes.Length);
-                    for (i = i + bytes.Length; i < newBytes.Length; i++)
+                    for (i += bytes.Length; i < newBytes.Length; i++)
                     {
                         newBytes[i] = padding;
                     }
@@ -117,7 +117,7 @@
             if (((bytes[length - 1] >= 0x81) && (bytes[length - 1] <= 0x9f)) ||
                 ((bytes[length - 1] >= 0xe0) && (bytes[length - 1] <= 0xfc)))
             {
-                length = length - 1;
+                length -= 1;
             }
 
             return Instance.GetString(bytes, 0, length);

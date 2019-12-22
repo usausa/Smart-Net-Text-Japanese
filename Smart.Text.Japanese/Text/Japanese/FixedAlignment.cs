@@ -1,9 +1,9 @@
-﻿namespace Smart.Text.Japanese
+namespace Smart.Text.Japanese
 {
     public enum FixedAlignment
     {
         Left,
         Center,
-        Right,
+        Right
     }
 }
