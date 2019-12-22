@@ -2,9 +2,13 @@
 
   <PropertyGroup>
     <OutputType>Exe</OutputType>
-    <TargetFramework>netcoreapp2.1</TargetFramework>
+    <TargetFramework>netcoreapp3.0</TargetFramework>
     <CodeAnalysisRuleSet>..\Smart.Text.Japanese.ruleset</CodeAnalysisRuleSet>
   </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="BenchmarkDotNet" Version="0.12.0" />
+  </ItemGroup>
 
   <ItemGroup>
     <ProjectReference Include="..\Smart.Text.Japanese\Smart.Text.Japanese.csproj" />
