@@ -7,4 +7,12 @@
     <CodeAnalysisRuleSet>..\Smart.Text.Japanese.ruleset</CodeAnalysisRuleSet>
   </PropertyGroup>
 
+  <PropertyGroup>
+    <PackageId>Usa.Smart.Text.Japanese</PackageId>
+    <Title>Smart.Text.Japanese .NET</Title>
+    <Description>Smart japanese text library for .NET</Description>
+    <Summary>Smart japanese text library for .NET</Summary>
+    <PackageTags>smart text japanese</PackageTags>
+  </PropertyGroup>
+
 </Project>
