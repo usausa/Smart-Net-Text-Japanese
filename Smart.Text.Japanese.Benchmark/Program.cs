@@ -1,4 +1,4 @@
-﻿namespace Smart.Text.Japanese.Benchmark
+namespace Smart.Text.Japanese.Benchmark
 {
     using BenchmarkDotNet.Attributes;
     using BenchmarkDotNet.Configs;
@@ -21,9 +21,9 @@
     {
         public BenchmarkConfig()
         {
-            Add(MarkdownExporter.Default, MarkdownExporter.GitHub);
-            Add(MemoryDiagnoser.Default);
-            Add(Job.MediumRun);
+            AddExporter(MarkdownExporter.Default, MarkdownExporter.GitHub);
+            AddDiagnoser(MemoryDiagnoser.Default);
+            AddJob(Job.MediumRun);
         }
     }
 
