@@ -1,5 +1,7 @@
 # Smart.Text.Japanese .NET - japanese text library for .NET
 
+[![NuGet Badge](https://buildstats.info/nuget/Usa.Smart.Text.Japanese)](https://www.nuget.org/packages/Usa.Smart.Text.Japanese/)
+
 ## What is this?
 
 `mb_convert_kana` like converter.
