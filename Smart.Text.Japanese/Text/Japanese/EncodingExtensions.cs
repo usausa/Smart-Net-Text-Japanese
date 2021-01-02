@@ -25,7 +25,7 @@ namespace Smart.Text.Japanese
         }
 
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Design", "CA1062:ValidateArgumentsOfPublicMethods", Justification = "Extensions")]
-        public static unsafe byte[] GetFixedBytes(this Encoding enc, string str, int offset, int? length, int byteCount, FixedAlignment alignment, byte padding)
+        public static unsafe byte[] GetFixedBytes(this Encoding enc, string str, int offset, int length, int byteCount, FixedAlignment alignment, byte padding)
         {
             if (String.IsNullOrEmpty(str))
             {
@@ -43,30 +43,29 @@ namespace Smart.Text.Japanese
             fixed (byte* pBytes = &bytes[0])
             fixed (char* pString = str)
             {
-                var size = length ?? (str.Length - offset);
-                var count = enc.GetByteCount(&pString[offset], size);
+                var count = enc.GetByteCount(&pString[offset], length);
                 if (count == byteCount)
                 {
-                    enc.GetBytes(&pString[offset], size, pBytes, count);
+                    enc.GetBytes(&pString[offset], length, pBytes, count);
                 }
                 else
                 {
                     if (alignment == FixedAlignment.Left)
                     {
-                        enc.GetBytes(pString + offset, size, pBytes, count);
+                        enc.GetBytes(pString + offset, length, pBytes, count);
                         Fill(pBytes, count, byteCount - count, padding);
                     }
                     else if (alignment == FixedAlignment.Right)
                     {
                         var fillLength = byteCount - count;
-                        enc.GetBytes(pString + offset, size, pBytes + fillLength, count);
+                        enc.GetBytes(pString + offset, length, pBytes + fillLength, count);
                         Fill(pBytes, 0, fillLength, padding);
                     }
                     else
                     {
                         var half = (byteCount - count) / 2;
                         Fill(pBytes, 0, half, padding);
-                        enc.GetBytes(pString + offset, size, pBytes + half, count);
+                        enc.GetBytes(pString + offset, length, pBytes + half, count);
                         Fill(pBytes, half + count, byteCount - half - count, padding);
                     }
                 }
@@ -76,51 +75,38 @@ namespace Smart.Text.Japanese
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static byte[] GetFixedBytes(this Encoding enc, string str, int offset, int length, int byteCount, FixedAlignment alignment)
-        {
-            return enc.GetFixedBytes(str, offset, length, byteCount, alignment, 0x20);
-        }
+        public static byte[] GetFixedBytes(this Encoding enc, string str, int offset, int length, int byteCount, FixedAlignment alignment) =>
+            enc.GetFixedBytes(str, offset, length, byteCount, alignment, 0x20);
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static byte[] GetFixedBytes(this Encoding enc, string str, int offset, int length, int byteCount, byte padding)
-        {
-            return enc.GetFixedBytes(str, offset, length, byteCount, FixedAlignment.Left, padding);
-        }
+        public static byte[] GetFixedBytes(this Encoding enc, string str, int offset, int length, int byteCount, byte padding) =>
+            enc.GetFixedBytes(str, offset, length, byteCount, FixedAlignment.Left, padding);
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static byte[] GetFixedBytes(this Encoding enc, string str, int length, int byteCount, FixedAlignment alignment, byte padding)
-        {
-            return enc.GetFixedBytes(str, 0, length, byteCount, alignment, padding);
-        }
+        public static byte[] GetFixedBytes(this Encoding enc, string str, int length, int byteCount, FixedAlignment alignment, byte padding) =>
+            enc.GetFixedBytes(str, 0, length, byteCount, alignment, padding);
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static byte[] GetFixedBytes(this Encoding enc, string str, int length, int byteCount, FixedAlignment alignment)
-        {
-            return enc.GetFixedBytes(str, 0, length, byteCount, alignment, 0x20);
-        }
+        public static byte[] GetFixedBytes(this Encoding enc, string str, int length, int byteCount, FixedAlignment alignment) =>
+            enc.GetFixedBytes(str, 0, length, byteCount, alignment, 0x20);
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static byte[] GetFixedBytes(this Encoding enc, string str, int length, int byteCount, byte padding)
-        {
-            return enc.GetFixedBytes(str, 0, length, byteCount, FixedAlignment.Left, padding);
-        }
+        public static byte[] GetFixedBytes(this Encoding enc, string str, int length, int byteCount, byte padding) =>
+            enc.GetFixedBytes(str, 0, length, byteCount, FixedAlignment.Left, padding);
 
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Design", "CA1062:ValidateArgumentsOfPublicMethods", Justification = "Extensions")]
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static byte[] GetFixedBytes(this Encoding enc, string str, int byteCount, FixedAlignment alignment, byte padding)
-        {
-            return enc.GetFixedBytes(str, 0, null, byteCount, alignment, padding);
-        }
+        public static byte[] GetFixedBytes(this Encoding enc, string str, int byteCount, FixedAlignment alignment, byte padding) =>
+            enc.GetFixedBytes(str, 0, str.Length, byteCount, alignment, padding);
 
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Design", "CA1062:ValidateArgumentsOfPublicMethods", Justification = "Extensions")]
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static byte[] GetFixedBytes(this Encoding enc, string str, int byteCount, FixedAlignment alignment)
-        {
-            return enc.GetFixedBytes(str, 0, null, byteCount, alignment, 0x20);
-        }
+        public static byte[] GetFixedBytes(this Encoding enc, string str, int byteCount, FixedAlignment alignment) =>
+            enc.GetFixedBytes(str, 0, str.Length, byteCount, alignment, 0x20);
 
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Design", "CA1062:ValidateArgumentsOfPublicMethods", Justification = "Extensions")]
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static byte[] GetFixedBytes(this Encoding enc, string str, int byteCount, byte padding)
-        {
-            return enc.GetFixedBytes(str, 0, null, byteCount, FixedAlignment.Left, padding);
-        }
+        public static byte[] GetFixedBytes(this Encoding enc, string str, int byteCount, byte padding) =>
+            enc.GetFixedBytes(str, 0, str.Length, byteCount, FixedAlignment.Left, padding);
     }
 }
