@@ -6,25 +6,6 @@ namespace Smart.Text.Japanese
 
     public static class EncodingExtensions
     {
-        // TODO
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        private static unsafe void Fill(byte* pArray, int offset, int length, byte value)
-        {
-            pArray[offset] = value;
-
-            int copy;
-            for (copy = 1; copy <= length >> 1; copy <<= 1)
-            {
-                Buffer.MemoryCopy(&pArray[offset], &pArray[offset + copy], copy, copy);
-            }
-
-            var left = length - copy;
-            if (left > 0)
-            {
-                Buffer.MemoryCopy(&pArray[offset], &pArray[offset + copy], copy, left);
-            }
-        }
-
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Design", "CA1062:ValidateArgumentsOfPublicMethods", Justification = "Extensions")]
         public static unsafe byte[] GetFixedBytes(this Encoding enc, string str, int offset, int length, int byteCount, FixedAlignment alignment, byte padding)
         {
@@ -32,12 +13,6 @@ namespace Smart.Text.Japanese
             {
                 var buffer = new byte[byteCount];
                 buffer.AsSpan().Fill(padding);
-
-                fixed (byte* pBytes = &buffer[0])
-                {
-                    Fill(pBytes, 0, byteCount, padding);
-                }
-
                 return buffer;
             }
 
@@ -55,20 +30,20 @@ namespace Smart.Text.Japanese
                     if (alignment == FixedAlignment.Left)
                     {
                         enc.GetBytes(pString + offset, length, pBytes, count);
-                        Fill(pBytes, count, byteCount - count, padding);
+                        bytes.AsSpan(count, byteCount - count).Fill(padding);
                     }
                     else if (alignment == FixedAlignment.Right)
                     {
                         var fillLength = byteCount - count;
                         enc.GetBytes(pString + offset, length, pBytes + fillLength, count);
-                        Fill(pBytes, 0, fillLength, padding);
+                        bytes.AsSpan(0, fillLength).Fill(padding);
                     }
                     else
                     {
                         var half = (byteCount - count) / 2;
-                        Fill(pBytes, 0, half, padding);
+                        bytes.AsSpan(0, half).Fill(padding);
                         enc.GetBytes(pString + offset, length, pBytes + half, count);
-                        Fill(pBytes, half + count, byteCount - half - count, padding);
+                        bytes.AsSpan(half + count, byteCount - half - count).Fill(padding);
                     }
                 }
             }

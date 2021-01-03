@@ -14,7 +14,7 @@ namespace Smart.Text.Japanese
         }
 
         [Fact]
-        public void PaddingLeft()
+        public void PaddingRight()
         {
             Assert.Equal(Enc.GetBytes("あ "), Enc.GetFixedBytes("あ", 3, FixedAlignment.Left));
             Assert.Equal(Enc.GetBytes("あA "), Enc.GetFixedBytes("あA", 4, FixedAlignment.Left));
@@ -22,7 +22,7 @@ namespace Smart.Text.Japanese
         }
 
         [Fact]
-        public void PaddingRight()
+        public void PaddingLeft()
         {
             Assert.Equal(Enc.GetBytes(" あ"), Enc.GetFixedBytes("あ", 3, FixedAlignment.Right));
             Assert.Equal(Enc.GetBytes(" あA"), Enc.GetFixedBytes("あA", 4, FixedAlignment.Right));
