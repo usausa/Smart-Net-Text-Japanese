@@ -23,6 +23,9 @@ namespace Smart.Text.Japanese
             "をぁぃぅぇぉゃゅょっーあいうえおかきくけこさしすせそたちつてとなにぬねのはひふへほまみむめもやゆよらりるれろわん゛゜";
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
+#if NET5_0
+        [SkipLocalsInit]
+#endif
         public static unsafe string Convert(ReadOnlySpan<char> source, KanaOption option)
         {
             if (source.IsEmpty)
