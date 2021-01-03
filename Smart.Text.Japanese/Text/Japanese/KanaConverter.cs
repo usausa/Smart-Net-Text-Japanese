@@ -42,10 +42,10 @@ namespace Smart.Text.Japanese
             else
             {
                 var buffer = ArrayPool<char>.Shared.Rent(source.Length * 2);
-                fixed (char* pString = buffer)
+                fixed (char* pBuffer = buffer)
                 {
-                    var length = ConvertInternal(source, pString, option);
-                    var result = new string(pString, 0, length);
+                    var length = ConvertInternal(source, pBuffer, option);
+                    var result = new string(pBuffer, 0, length);
                     ArrayPool<char>.Shared.Return(buffer);
                     return result;
                 }
@@ -53,14 +53,28 @@ namespace Smart.Text.Japanese
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static unsafe int Convert(string source, char* buffer, KanaOption option)
+        public static unsafe int Convert(ReadOnlySpan<char> source, Span<char> buffer, KanaOption option)
         {
-            if (String.IsNullOrEmpty(source))
+            if (source.IsEmpty)
             {
                 return 0;
             }
 
-            return ConvertInternal(source.AsSpan(), buffer, option);
+            fixed (char* pBuffer = buffer)
+            {
+                return ConvertInternal(source, pBuffer, option);
+            }
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static unsafe int Convert(ReadOnlySpan<char> source, char* buffer, KanaOption option)
+        {
+            if (source.IsEmpty)
+            {
+                return 0;
+            }
+
+            return ConvertInternal(source, buffer, option);
         }
 
         private static unsafe int ConvertInternal(ReadOnlySpan<char> source, char* buffer, KanaOption option)
@@ -198,10 +212,10 @@ namespace Smart.Text.Japanese
             else
             {
                 var buffer = ArrayPool<char>.Shared.Rent(source.Length * 2);
-                fixed (char* pString = buffer)
+                fixed (char* pBuffer = buffer)
                 {
-                    var length = ConvertToNarrowInternal(source, pString);
-                    var result = new string(pString, 0, length);
+                    var length = ConvertToNarrowInternal(source, pBuffer);
+                    var result = new string(pBuffer, 0, length);
                     ArrayPool<char>.Shared.Return(buffer);
                     return result;
                 }
@@ -209,14 +223,28 @@ namespace Smart.Text.Japanese
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static unsafe int ConvertToNarrow(string source, char* buffer)
+        public static unsafe int ConvertToNarrow(ReadOnlySpan<char> source, Span<char> buffer)
         {
-            if (String.IsNullOrEmpty(source))
+            if (source.IsEmpty)
             {
                 return 0;
             }
 
-            return ConvertToNarrowInternal(source.AsSpan(), buffer);
+            fixed (char* pBuffer = buffer)
+            {
+                return ConvertToNarrowInternal(source, pBuffer);
+            }
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static unsafe int ConvertToNarrow(ReadOnlySpan<char> source, char* buffer)
+        {
+            if (source.IsEmpty)
+            {
+                return 0;
+            }
+
+            return ConvertToNarrowInternal(source, buffer);
         }
 
         private static unsafe int ConvertToNarrowInternal(ReadOnlySpan<char> source, char* buffer)
@@ -283,10 +311,10 @@ namespace Smart.Text.Japanese
             else
             {
                 var buffer = ArrayPool<char>.Shared.Rent(source.Length * 2);
-                fixed (char* pString = buffer)
+                fixed (char* pBuffer = buffer)
                 {
-                    var length = ConvertToWideInternal(source, pString);
-                    var result = new string(pString, 0, length);
+                    var length = ConvertToWideInternal(source, pBuffer);
+                    var result = new string(pBuffer, 0, length);
                     ArrayPool<char>.Shared.Return(buffer);
                     return result;
                 }
@@ -294,14 +322,28 @@ namespace Smart.Text.Japanese
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static unsafe int ConvertToWide(string source, char* buffer)
+        public static unsafe int ConvertToWide(ReadOnlySpan<char> source, Span<char> buffer)
         {
-            if (String.IsNullOrEmpty(source))
+            if (source.IsEmpty)
             {
                 return 0;
             }
 
-            return ConvertToWideInternal(source.AsSpan(), buffer);
+            fixed (char* pBuffer = buffer)
+            {
+                return ConvertToWideInternal(source, pBuffer);
+            }
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static unsafe int ConvertToWide(ReadOnlySpan<char> source, char* buffer)
+        {
+            if (source.IsEmpty)
+            {
+                return 0;
+            }
+
+            return ConvertToWideInternal(source, buffer);
         }
 
         private static unsafe int ConvertToWideInternal(ReadOnlySpan<char> source, char* buffer)
