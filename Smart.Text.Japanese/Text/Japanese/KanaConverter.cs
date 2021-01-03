@@ -1,6 +1,7 @@
-﻿namespace Smart.Text.Japanese
+namespace Smart.Text.Japanese
 {
     using System;
+    using System.Buffers;
     using System.Runtime.CompilerServices;
 
     public static class KanaConverter
@@ -21,13 +22,46 @@
         private const string ToHiragana =
             "をぁぃぅぇぉゃゅょっーあいうえおかきくけこさしすせそたちつてとなにぬねのはひふへほまみむめもやゆよらりるれろわん゛゜";
 
-        public static unsafe string Convert(string src, KanaOption option)
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static unsafe string Convert(ReadOnlySpan<char> source, KanaOption option)
         {
-            if (String.IsNullOrEmpty(src))
+            if (source.IsEmpty)
             {
-                return src;
+                return string.Empty;
             }
 
+            if (source.Length < 2048)
+            {
+                var buffer = stackalloc char[source.Length * 2];
+                var length = ConvertInternal(source, buffer, option);
+                return new string(buffer, 0, length);
+            }
+            else
+            {
+                var buffer = ArrayPool<char>.Shared.Rent(source.Length * 2);
+                fixed (char* pString = buffer)
+                {
+                    var length = ConvertInternal(source, pString, option);
+                    var result = new string(pString, 0, length);
+                    ArrayPool<char>.Shared.Return(buffer);
+                    return result;
+                }
+            }
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static unsafe int Convert(string source, char* buffer, KanaOption option)
+        {
+            if (String.IsNullOrEmpty(source))
+            {
+                return 0;
+            }
+
+            return ConvertInternal(source.AsSpan(), buffer, option);
+        }
+
+        private static unsafe int ConvertInternal(ReadOnlySpan<char> source, char* buffer, KanaOption option)
+        {
             var isSpaceToNarrow = (option & KanaOption.SpaceToNarrow) == KanaOption.SpaceToNarrow;
             var isSpaceToWide = (option & KanaOption.SpaceToWide) == KanaOption.SpaceToWide;
             var isNumericToNarrow = (option & KanaOption.NumericToNarrow) == KanaOption.NumericToNarrow;
@@ -44,10 +78,9 @@
             var isHankanaToHiragana = (option & KanaOption.HankanaToHiragana) == KanaOption.HankanaToHiragana;
 
             var pos = 0;
-            var buffer = stackalloc char[src.Length * 2];
-            for (var i = 0; i < src.Length; i++)
+            for (var i = 0; i < source.Length; i++)
             {
-                var c = src[i];
+                var c = source[i];
 
                 // Space
                 if (isSpaceToNarrow && c == '　')
@@ -114,7 +147,7 @@
 
                 if (isHankanaToKatakana)
                 {
-                    var next = i < src.Length - 1 ? src[i + 1] : (char)0;
+                    var next = i < source.Length - 1 ? source[i + 1] : (char)0;
                     if (HankanaToKatakana(c, next, ref i, buffer, ref pos))
                     {
                         continue;
@@ -129,7 +162,7 @@
 
                 if (isHankanaToHiragana)
                 {
-                    var next = i < src.Length - 1 ? src[i + 1] : (char)0;
+                    var next = i < source.Length - 1 ? source[i + 1] : (char)0;
                     if (HankanaToHiragana(c, next, ref i, buffer, ref pos))
                     {
                         continue;
@@ -139,7 +172,7 @@
                 buffer[pos++] = c;
             }
 
-            return new string(buffer, 0, pos);
+            return pos;
         }
 
         // ASCII

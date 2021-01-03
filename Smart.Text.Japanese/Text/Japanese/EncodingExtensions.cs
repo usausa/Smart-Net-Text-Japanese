@@ -6,6 +6,7 @@ namespace Smart.Text.Japanese
 
     public static class EncodingExtensions
     {
+        // TODO
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         private static unsafe void Fill(byte* pArray, int offset, int length, byte value)
         {
@@ -30,6 +31,7 @@ namespace Smart.Text.Japanese
             if (String.IsNullOrEmpty(str))
             {
                 var buffer = new byte[byteCount];
+                buffer.AsSpan().Fill(padding);
 
                 fixed (byte* pBytes = &buffer[0])
                 {
