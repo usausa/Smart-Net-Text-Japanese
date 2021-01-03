@@ -87,27 +87,61 @@ namespace Smart.Text.Japanese
 
         // Fixed bytes
 
-        // TODO buffer version
-        // TODO pointer version ?
-
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
 #if NET5_0
         [SkipLocalsInit]
 #endif
-        public static unsafe byte[] GetFixedBytes(ReadOnlySpan<char> source, int byteCount, FixedAlignment alignment, byte padding)
+        public static byte[] GetFixedBytes(ReadOnlySpan<char> chars, int byteCount, FixedAlignment alignment)
         {
-            if (source.IsEmpty)
+            var bytes = new byte[byteCount];
+            GetFixedBytes(chars, bytes, alignment, 0x20);
+            return bytes;
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+#if NET5_0
+        [SkipLocalsInit]
+#endif
+        public static byte[] GetFixedBytes(ReadOnlySpan<char> chars, int byteCount, byte padding)
+        {
+            var bytes = new byte[byteCount];
+            GetFixedBytes(chars, bytes, FixedAlignment.Left, padding);
+            return bytes;
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+#if NET5_0
+        [SkipLocalsInit]
+#endif
+        public static byte[] GetFixedBytes(ReadOnlySpan<char> chars, int byteCount, FixedAlignment alignment, byte padding)
+        {
+            var bytes = new byte[byteCount];
+            GetFixedBytes(chars, bytes, alignment, padding);
+            return bytes;
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static void GetFixedBytes(ReadOnlySpan<char> chars, Span<byte> bytes, FixedAlignment alignment) =>
+            GetFixedBytes(chars, bytes, alignment, 0x20);
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static void GetFixedBytes(ReadOnlySpan<char> chars, Span<byte> bytes, byte padding) =>
+            GetFixedBytes(chars, bytes, FixedAlignment.Left, padding);
+
+        public static unsafe void GetFixedBytes(ReadOnlySpan<char> chars, Span<byte> bytes, FixedAlignment alignment, byte padding)
+        {
+            if (chars.IsEmpty)
             {
-                var buffer = new byte[byteCount];
-                buffer.AsSpan().Fill(padding);
-                return buffer;
+                bytes.Fill(padding);
+                return;
             }
 
             var count = 0;
             var sourceLength = 0;
-            while (sourceLength < source.Length)
+            while (sourceLength < chars.Length)
             {
-                var size = IsSingleByte(source[sourceLength]) ? 1 : 2;
-                if (count + size > byteCount)
+                var size = IsSingleByte(chars[sourceLength]) ? 1 : 2;
+                if (count + size > bytes.Length)
                 {
                     break;
                 }
@@ -116,47 +150,37 @@ namespace Smart.Text.Japanese
                 count += size;
             }
 
-            var bytes = new byte[byteCount];
-            fixed (byte* pBytes = &bytes[0])
-            fixed (char* pString = source)
+            // TODO span check
+            fixed (byte* pBytes = bytes)
+            fixed (char* pString = chars)
             {
-                if (count == byteCount)
+                if (count == bytes.Length)
                 {
-                    Encoding.GetBytes(pString, source.Length, pBytes, byteCount);
+                    Encoding.GetBytes(pString, chars.Length, pBytes, bytes.Length);
                 }
                 else
                 {
                     if (alignment == FixedAlignment.Left)
                     {
                         Encoding.GetBytes(pString, sourceLength, pBytes, count);
-                        bytes.AsSpan(count, byteCount - count).Fill(padding);
+                        bytes.Slice(count, bytes.Length - count).Fill(padding);
                     }
                     else if (alignment == FixedAlignment.Right)
                     {
-                        var fillLength = byteCount - count;
+                        var fillLength = bytes.Length - count;
                         Encoding.GetBytes(pString, sourceLength, pBytes + fillLength, count);
-                        bytes.AsSpan(0, fillLength).Fill(padding);
+                        bytes.Slice(0, fillLength).Fill(padding);
                     }
                     else
                     {
-                        var half = (byteCount - count) / 2;
-                        bytes.AsSpan(0, half).Fill(padding);
+                        var half = (bytes.Length - count) / 2;
+                        bytes.Slice(0, half).Fill(padding);
                         Encoding.GetBytes(pString, sourceLength, pBytes + half, count);
-                        bytes.AsSpan(half + count, byteCount - half - count).Fill(padding);
+                        bytes.Slice(half + count, bytes.Length - half - count).Fill(padding);
                     }
                 }
             }
-
-            return bytes;
         }
-
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static byte[] GetFixedBytes(ReadOnlySpan<char> source, int byteCount, FixedAlignment alignment) =>
-            GetFixedBytes(source, byteCount, alignment, 0x20);
-
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static byte[] GetFixedBytes(ReadOnlySpan<char> source, int byteCount, byte padding) =>
-            GetFixedBytes(source, byteCount, FixedAlignment.Left, padding);
 
         // Split
 
