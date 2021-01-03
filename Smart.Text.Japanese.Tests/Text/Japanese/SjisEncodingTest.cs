@@ -1,5 +1,6 @@
 namespace Smart.Text.Japanese
 {
+    using System.Linq;
     using System.Text;
 
     using Xunit;
@@ -71,6 +72,15 @@ namespace Smart.Text.Japanese
             Assert.Equal("あA", SjisEncoding.GetLimitString("あAあAあA", 0, 4));
             Assert.Equal("あAあ", SjisEncoding.GetLimitString("あAあAあA", 0, 5));
             Assert.Equal("あAあA", SjisEncoding.GetLimitString("あAあAあA", 0, 6));
+        }
+
+        [Fact]
+        public void SplitLimitString()
+        {
+            var list = SjisEncoding.SplitLimitString("Aあ", 2).ToList();
+            Assert.Equal(2, list.Count);
+            Assert.Equal("A", list[0]);
+            Assert.Equal("あ", list[1]);
         }
     }
 }

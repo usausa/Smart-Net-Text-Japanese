@@ -136,25 +136,24 @@ namespace Smart.Text.Japanese
                 return;
             }
 
-            var count = 0;
             var sourceLength = 0;
+            var byteCount = 0;
             while (sourceLength < chars.Length)
             {
                 var size = IsSingleByte(chars[sourceLength]) ? 1 : 2;
-                if (count + size > bytes.Length)
+                if (byteCount + size > bytes.Length)
                 {
                     break;
                 }
 
                 sourceLength++;
-                count += size;
+                byteCount += size;
             }
 
-            // TODO span check
             fixed (byte* pBytes = bytes)
             fixed (char* pString = chars)
             {
-                if (count == bytes.Length)
+                if (byteCount == bytes.Length)
                 {
                     Encoding.GetBytes(pString, chars.Length, pBytes, bytes.Length);
                 }
@@ -162,21 +161,21 @@ namespace Smart.Text.Japanese
                 {
                     if (alignment == FixedAlignment.Left)
                     {
-                        Encoding.GetBytes(pString, sourceLength, pBytes, count);
-                        bytes.Slice(count, bytes.Length - count).Fill(padding);
+                        Encoding.GetBytes(pString, sourceLength, pBytes, byteCount);
+                        bytes.Slice(byteCount, bytes.Length - byteCount).Fill(padding);
                     }
                     else if (alignment == FixedAlignment.Right)
                     {
-                        var fillLength = bytes.Length - count;
-                        Encoding.GetBytes(pString, sourceLength, pBytes + fillLength, count);
+                        var fillLength = bytes.Length - byteCount;
+                        Encoding.GetBytes(pString, sourceLength, pBytes + fillLength, byteCount);
                         bytes.Slice(0, fillLength).Fill(padding);
                     }
                     else
                     {
-                        var half = (bytes.Length - count) / 2;
+                        var half = (bytes.Length - byteCount) / 2;
                         bytes.Slice(0, half).Fill(padding);
-                        Encoding.GetBytes(pString, sourceLength, pBytes + half, count);
-                        bytes.Slice(half + count, bytes.Length - half - count).Fill(padding);
+                        Encoding.GetBytes(pString, sourceLength, pBytes + half, byteCount);
+                        bytes.Slice(half + byteCount, bytes.Length - half - byteCount).Fill(padding);
                     }
                 }
             }
@@ -184,26 +183,19 @@ namespace Smart.Text.Japanese
 
         // Split
 
-        // TODO rebuild: span, pointer
-
-        private static int CalcLimitLength(string str, int offset, int byteCount)
+        private static int CalcLimitLength(ReadOnlySpan<char> chars, int limit)
         {
             var length = 0;
-            var sjisCount = 0;
-            for (var i = offset; i < str.Length; i++)
+            var byteCount = 0;
+            while (length < chars.Length)
             {
-                sjisCount += IsSingleByte(str[i]) ? 1 : 2;
-                if (sjisCount > byteCount)
+                byteCount += IsSingleByte(chars[length]) ? 1 : 2;
+                if (byteCount > limit)
                 {
                     break;
                 }
 
                 length++;
-
-                if (sjisCount == byteCount)
-                {
-                    break;
-                }
             }
 
             return length;
@@ -212,13 +204,13 @@ namespace Smart.Text.Japanese
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static string GetLimitString(string str, int byteCount)
         {
-            return String.IsNullOrEmpty(str) ? str : str.Substring(0, CalcLimitLength(str, 0, byteCount));
+            return String.IsNullOrEmpty(str) ? str : str.Substring(0, CalcLimitLength(str, byteCount));
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static string GetLimitString(string str, int offset, int byteCount)
         {
-            return String.IsNullOrEmpty(str) ? str : str.Substring(offset, CalcLimitLength(str, offset, byteCount));
+            return String.IsNullOrEmpty(str) ? str : str.Substring(offset, CalcLimitLength(str.AsSpan(offset), byteCount));
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -229,7 +221,7 @@ namespace Smart.Text.Japanese
         {
             while (true)
             {
-                var length = CalcLimitLength(str, offset, byteCount);
+                var length = CalcLimitLength(str.AsSpan(offset), byteCount);
                 if (length == 0)
                 {
                     break;
