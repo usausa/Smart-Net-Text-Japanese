@@ -178,6 +178,177 @@ namespace Smart.Text.Japanese
             return pos;
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+#if NET5_0
+        [SkipLocalsInit]
+#endif
+        public static unsafe string ConvertToNarrow(ReadOnlySpan<char> source)
+        {
+            if (source.IsEmpty)
+            {
+                return string.Empty;
+            }
+
+            if (source.Length < 2048)
+            {
+                var buffer = stackalloc char[source.Length * 2];
+                var length = ConvertToNarrowInternal(source, buffer);
+                return new string(buffer, 0, length);
+            }
+            else
+            {
+                var buffer = ArrayPool<char>.Shared.Rent(source.Length * 2);
+                fixed (char* pString = buffer)
+                {
+                    var length = ConvertToNarrowInternal(source, pString);
+                    var result = new string(pString, 0, length);
+                    ArrayPool<char>.Shared.Return(buffer);
+                    return result;
+                }
+            }
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static unsafe int ConvertToNarrow(string source, char* buffer)
+        {
+            if (String.IsNullOrEmpty(source))
+            {
+                return 0;
+            }
+
+            return ConvertToNarrowInternal(source.AsSpan(), buffer);
+        }
+
+        private static unsafe int ConvertToNarrowInternal(ReadOnlySpan<char> source, char* buffer)
+        {
+            var pos = 0;
+            for (var i = 0; i < source.Length; i++)
+            {
+                var c = source[i];
+
+                // Space
+                if (c == '　')
+                {
+                    buffer[pos++] = ' ';
+                    continue;
+                }
+
+                // Numeric
+                if (NumericToNarrow(c, buffer, ref pos))
+                {
+                    continue;
+                }
+
+                // Roman
+                if (RomanToNarrow(c, buffer, ref pos))
+                {
+                    continue;
+                }
+
+                // Ascii
+                if (AsciiToNarrow(c, buffer, ref pos))
+                {
+                    continue;
+                }
+
+                // Hankana/Katakana
+                if (KatakanaToHankana(c, buffer, ref pos))
+                {
+                    continue;
+                }
+
+                buffer[pos++] = c;
+            }
+
+            return pos;
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+#if NET5_0
+        [SkipLocalsInit]
+#endif
+        public static unsafe string ConvertToWide(ReadOnlySpan<char> source)
+        {
+            if (source.IsEmpty)
+            {
+                return string.Empty;
+            }
+
+            if (source.Length < 2048)
+            {
+                var buffer = stackalloc char[source.Length * 2];
+                var length = ConvertToWideInternal(source, buffer);
+                return new string(buffer, 0, length);
+            }
+            else
+            {
+                var buffer = ArrayPool<char>.Shared.Rent(source.Length * 2);
+                fixed (char* pString = buffer)
+                {
+                    var length = ConvertToWideInternal(source, pString);
+                    var result = new string(pString, 0, length);
+                    ArrayPool<char>.Shared.Return(buffer);
+                    return result;
+                }
+            }
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static unsafe int ConvertToWide(string source, char* buffer)
+        {
+            if (String.IsNullOrEmpty(source))
+            {
+                return 0;
+            }
+
+            return ConvertToWideInternal(source.AsSpan(), buffer);
+        }
+
+        private static unsafe int ConvertToWideInternal(ReadOnlySpan<char> source, char* buffer)
+        {
+            var pos = 0;
+            for (var i = 0; i < source.Length; i++)
+            {
+                var c = source[i];
+
+                // Space
+                if (c == ' ')
+                {
+                    buffer[pos++] = '　';
+                    continue;
+                }
+
+                // Numeric
+                if (NumericToWide(c, buffer, ref pos))
+                {
+                    continue;
+                }
+
+                // Roman
+                if (RomanToWide(c, buffer, ref pos))
+                {
+                    continue;
+                }
+
+                // Ascii
+                if (AsciiToWide(c, buffer, ref pos))
+                {
+                    continue;
+                }
+
+                // Hankana/Katakana
+                var next = i < source.Length - 1 ? source[i + 1] : (char)0;
+                if (HankanaToKatakana(c, next, ref i, buffer, ref pos))
+                {
+                    continue;
+                }
+
+                buffer[pos++] = c;
+            }
+
+            return pos;
+        }
+
         // ASCII
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]

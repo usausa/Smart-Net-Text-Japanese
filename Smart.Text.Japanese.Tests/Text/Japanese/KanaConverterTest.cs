@@ -1,4 +1,4 @@
-﻿namespace Smart.Text.Japanese
+namespace Smart.Text.Japanese
 {
     using Xunit;
 
@@ -183,12 +183,14 @@
         public void TestToNarrow()
         {
             Assert.Equal(Narrow, KanaConverter.Convert(Wide, KanaOption.Narrow));
+            Assert.Equal(Narrow, KanaConverter.ConvertToNarrow(Wide));
         }
 
         [Fact]
         public void TestToWide()
         {
             Assert.Equal(Wide, KanaConverter.Convert(Narrow, KanaOption.Wide));
+            Assert.Equal(Wide, KanaConverter.ConvertToWide(Narrow));
         }
     }
 }

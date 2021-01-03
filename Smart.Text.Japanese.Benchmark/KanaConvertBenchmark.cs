@@ -67,6 +67,15 @@ namespace Smart.Text.Japanese.Benchmark
         }
 
         [Benchmark(OperationsPerInvoke = N)]
+        public void NarrowToWide1Optimized()
+        {
+            for (var i = 0; i < N; i++)
+            {
+                KanaConverter.ConvertToWide(narrow1);
+            }
+        }
+
+        [Benchmark(OperationsPerInvoke = N)]
         public void NarrowToWide10()
         {
             for (var i = 0; i < N; i++)
@@ -81,6 +90,15 @@ namespace Smart.Text.Japanese.Benchmark
             for (var i = 0; i < N; i++)
             {
                 KanaConverter.Convert(wide1, KanaOption.Narrow);
+            }
+        }
+
+        [Benchmark(OperationsPerInvoke = N)]
+        public void WideToNarrow1Optimized()
+        {
+            for (var i = 0; i < N; i++)
+            {
+                KanaConverter.ConvertToNarrow(wide1);
             }
         }
 

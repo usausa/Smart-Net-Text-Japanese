@@ -2,6 +2,7 @@ namespace Smart.Text.Japanese.Benchmark
 {
     using System.Reflection;
 
+    using BenchmarkDotNet.Columns;
     using BenchmarkDotNet.Configs;
     using BenchmarkDotNet.Diagnosers;
     using BenchmarkDotNet.Exporters;
@@ -20,9 +21,16 @@ namespace Smart.Text.Japanese.Benchmark
     {
         public BenchmarkConfig()
         {
-            AddExporter(MarkdownExporter.Default, MarkdownExporter.GitHub);
+            AddColumn(
+                StatisticColumn.Mean,
+                StatisticColumn.Min,
+                StatisticColumn.Max,
+                StatisticColumn.P90,
+                StatisticColumn.Error,
+                StatisticColumn.StdDev);
             AddDiagnoser(MemoryDiagnoser.Default);
-            AddJob(Job.MediumRun);
+            AddExporter(MarkdownExporter.Default, MarkdownExporter.GitHub);
+            AddJob(Job.ShortRun);
         }
     }
 }
