@@ -5,16 +5,13 @@ namespace Smart.Text.Japanese.Benchmark
     using BenchmarkDotNet.Attributes;
 
     [Config(typeof(BenchmarkConfig))]
-    public class EncodingExtensionsBenchmark
+    public class SjisEncodingBenchmark
     {
         private const int N = 1000;
 
-        private readonly Encoding encoding;
-
-        public EncodingExtensionsBenchmark()
+        public SjisEncodingBenchmark()
         {
             Encoding.RegisterProvider(CodePagesEncodingProvider.Instance);
-            encoding = SjisEncoding.Instance;
         }
 
         [Benchmark(OperationsPerInvoke = N)]
@@ -22,7 +19,7 @@ namespace Smart.Text.Japanese.Benchmark
         {
             for (var i = 0; i < N; i++)
             {
-                encoding.GetFixedBytes("あA", 8, FixedAlignment.Left);
+                SjisEncoding.GetFixedBytes("あA", 8, FixedAlignment.Left);
             }
         }
 
@@ -31,7 +28,7 @@ namespace Smart.Text.Japanese.Benchmark
         {
             for (var i = 0; i < N; i++)
             {
-                encoding.GetFixedBytes("あA", 8, FixedAlignment.Right);
+                SjisEncoding.GetFixedBytes("あA", 8, FixedAlignment.Right);
             }
         }
 
@@ -40,7 +37,7 @@ namespace Smart.Text.Japanese.Benchmark
         {
             for (var i = 0; i < N; i++)
             {
-                encoding.GetFixedBytes("あA", 8, FixedAlignment.Center);
+                SjisEncoding.GetFixedBytes("あA", 8, FixedAlignment.Center);
             }
         }
     }
