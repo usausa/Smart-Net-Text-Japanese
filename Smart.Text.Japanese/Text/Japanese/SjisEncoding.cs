@@ -1,4 +1,4 @@
-namespace Smart.Text.Japanese
+﻿namespace Smart.Text.Japanese
 {
     using System;
     using System.Collections.Generic;
@@ -7,15 +7,14 @@ namespace Smart.Text.Japanese
 
     public static class SjisEncoding
     {
+#pragma warning disable IDE0032
         private static readonly Encoding Encoding = Encoding.GetEncoding("Shift_JIS");
+#pragma warning restore IDE0032
 
         public static Encoding Instance
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
-            get
-            {
-                return Encoding;
-            }
+            get => Encoding;
         }
 
         // Shortcut
@@ -162,7 +161,7 @@ namespace Smart.Text.Japanese
                     if (alignment == FixedAlignment.Left)
                     {
                         Encoding.GetBytes(pString, sourceLength, pBytes, byteCount);
-                        bytes.Slice(byteCount, bytes.Length - byteCount).Fill(padding);
+                        bytes[byteCount..].Fill(padding);
                     }
                     else if (alignment == FixedAlignment.Right)
                     {
