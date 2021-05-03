@@ -167,14 +167,14 @@ namespace Smart.Text.Japanese
                     {
                         var fillLength = bytes.Length - byteCount;
                         Encoding.GetBytes(pString, sourceLength, pBytes + fillLength, byteCount);
-                        bytes.Slice(0, fillLength).Fill(padding);
+                        bytes[..fillLength].Fill(padding);
                     }
                     else
                     {
                         var half = (bytes.Length - byteCount) / 2;
-                        bytes.Slice(0, half).Fill(padding);
+                        bytes[..half].Fill(padding);
                         Encoding.GetBytes(pString, sourceLength, pBytes + half, byteCount);
-                        bytes.Slice(half + byteCount, bytes.Length - half - byteCount).Fill(padding);
+                        bytes[(half + byteCount)..bytes.Length].Fill(padding);
                     }
                 }
             }
@@ -203,7 +203,7 @@ namespace Smart.Text.Japanese
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static string GetLimitString(string str, int byteCount)
         {
-            return String.IsNullOrEmpty(str) ? str : str.Substring(0, CalcLimitLength(str, byteCount));
+            return String.IsNullOrEmpty(str) ? str : str[..CalcLimitLength(str, byteCount)];
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
