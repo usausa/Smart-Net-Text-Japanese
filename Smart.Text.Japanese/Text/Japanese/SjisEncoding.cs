@@ -87,7 +87,7 @@ namespace Smart.Text.Japanese
         // Fixed bytes
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-#if NET5_0
+#if NET5_0_OR_GREATER
         [SkipLocalsInit]
 #endif
         public static byte[] GetFixedBytes(ReadOnlySpan<char> chars, int byteCount, FixedAlignment alignment)
@@ -98,7 +98,7 @@ namespace Smart.Text.Japanese
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-#if NET5_0
+#if NET5_0_OR_GREATER
         [SkipLocalsInit]
 #endif
         public static byte[] GetFixedBytes(ReadOnlySpan<char> chars, int byteCount, byte padding)
@@ -109,7 +109,7 @@ namespace Smart.Text.Japanese
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-#if NET5_0
+#if NET5_0_OR_GREATER
         [SkipLocalsInit]
 #endif
         public static byte[] GetFixedBytes(ReadOnlySpan<char> chars, int byteCount, FixedAlignment alignment, byte padding)

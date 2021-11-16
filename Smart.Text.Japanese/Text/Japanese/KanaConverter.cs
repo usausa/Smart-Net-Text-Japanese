@@ -23,7 +23,7 @@ namespace Smart.Text.Japanese
             "をぁぃぅぇぉゃゅょっーあいうえおかきくけこさしすせそたちつてとなにぬねのはひふへほまみむめもやゆよらりるれろわん゛゜";
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-#if NET5_0
+#if NET5_0_OR_GREATER
         [SkipLocalsInit]
 #endif
         public static unsafe string Convert(ReadOnlySpan<char> source, KanaOption option)
@@ -182,7 +182,7 @@ namespace Smart.Text.Japanese
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-#if NET5_0
+#if NET5_0_OR_GREATER
         [SkipLocalsInit]
 #endif
         public static unsafe string ConvertToNarrow(ReadOnlySpan<char> source)
@@ -270,7 +270,7 @@ namespace Smart.Text.Japanese
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-#if NET5_0
+#if NET5_0_OR_GREATER
         [SkipLocalsInit]
 #endif
         public static unsafe string ConvertToWide(ReadOnlySpan<char> source)
