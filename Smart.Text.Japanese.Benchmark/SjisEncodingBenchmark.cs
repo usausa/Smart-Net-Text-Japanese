@@ -1,44 +1,43 @@
-namespace Smart.Text.Japanese.Benchmark
+namespace Smart.Text.Japanese.Benchmark;
+
+using System.Text;
+
+using BenchmarkDotNet.Attributes;
+
+[Config(typeof(BenchmarkConfig))]
+public class SjisEncodingBenchmark
 {
-    using System.Text;
+    private const int N = 1000;
 
-    using BenchmarkDotNet.Attributes;
-
-    [Config(typeof(BenchmarkConfig))]
-    public class SjisEncodingBenchmark
+    public SjisEncodingBenchmark()
     {
-        private const int N = 1000;
+        Encoding.RegisterProvider(CodePagesEncodingProvider.Instance);
+    }
 
-        public SjisEncodingBenchmark()
+    [Benchmark(OperationsPerInvoke = N)]
+    public void PadLeft()
+    {
+        for (var i = 0; i < N; i++)
         {
-            Encoding.RegisterProvider(CodePagesEncodingProvider.Instance);
+            SjisEncoding.GetFixedBytes("あA", 8, FixedAlignment.Left);
         }
+    }
 
-        [Benchmark(OperationsPerInvoke = N)]
-        public void PadLeft()
+    [Benchmark(OperationsPerInvoke = N)]
+    public void PadRight()
+    {
+        for (var i = 0; i < N; i++)
         {
-            for (var i = 0; i < N; i++)
-            {
-                SjisEncoding.GetFixedBytes("あA", 8, FixedAlignment.Left);
-            }
+            SjisEncoding.GetFixedBytes("あA", 8, FixedAlignment.Right);
         }
+    }
 
-        [Benchmark(OperationsPerInvoke = N)]
-        public void PadRight()
+    [Benchmark(OperationsPerInvoke = N)]
+    public void PaddingCenter()
+    {
+        for (var i = 0; i < N; i++)
         {
-            for (var i = 0; i < N; i++)
-            {
-                SjisEncoding.GetFixedBytes("あA", 8, FixedAlignment.Right);
-            }
-        }
-
-        [Benchmark(OperationsPerInvoke = N)]
-        public void PaddingCenter()
-        {
-            for (var i = 0; i < N; i++)
-            {
-                SjisEncoding.GetFixedBytes("あA", 8, FixedAlignment.Center);
-            }
+            SjisEncoding.GetFixedBytes("あA", 8, FixedAlignment.Center);
         }
     }
 }
