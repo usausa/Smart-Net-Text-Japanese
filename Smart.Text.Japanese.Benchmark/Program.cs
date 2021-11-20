@@ -21,6 +21,7 @@ public class BenchmarkConfig : ManualConfig
 {
     public BenchmarkConfig()
     {
+        AddExporter(MarkdownExporter.Default, MarkdownExporter.GitHub);
         AddColumn(
             StatisticColumn.Mean,
             StatisticColumn.Min,
@@ -29,7 +30,6 @@ public class BenchmarkConfig : ManualConfig
             StatisticColumn.Error,
             StatisticColumn.StdDev);
         AddDiagnoser(MemoryDiagnoser.Default);
-        AddExporter(MarkdownExporter.Default, MarkdownExporter.GitHub);
-        AddJob(Job.ShortRun);
+        AddJob(Job.MediumRun);
     }
 }

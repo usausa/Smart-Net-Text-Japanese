@@ -60,54 +60,60 @@ public class KanaConvertBenchmark
     [Benchmark(OperationsPerInvoke = N)]
     public void NarrowToWide1()
     {
+        var buffer = narrow1;
         for (var i = 0; i < N; i++)
         {
-            KanaConverter.Convert(narrow1, KanaOption.Wide);
+            KanaConverter.Convert(buffer, KanaOption.Wide);
         }
     }
 
     [Benchmark(OperationsPerInvoke = N)]
     public void NarrowToWide1Optimized()
     {
+        var buffer = narrow1;
         for (var i = 0; i < N; i++)
         {
-            KanaConverter.ConvertToWide(narrow1);
+            KanaConverter.ConvertToWide(buffer);
         }
     }
 
     [Benchmark(OperationsPerInvoke = N)]
     public void NarrowToWide10()
     {
+        var buffer = narrow10;
         for (var i = 0; i < N; i++)
         {
-            KanaConverter.Convert(narrow10, KanaOption.Wide);
+            KanaConverter.Convert(buffer, KanaOption.Wide);
         }
     }
 
     [Benchmark(OperationsPerInvoke = N)]
     public void WideToNarrow1()
     {
+        var buffer = wide1;
         for (var i = 0; i < N; i++)
         {
-            KanaConverter.Convert(wide1, KanaOption.Narrow);
+            KanaConverter.Convert(buffer, KanaOption.Narrow);
         }
     }
 
     [Benchmark(OperationsPerInvoke = N)]
     public void WideToNarrow1Optimized()
     {
+        var buffer = wide1;
         for (var i = 0; i < N; i++)
         {
-            KanaConverter.ConvertToNarrow(wide1);
+            KanaConverter.ConvertToNarrow(buffer);
         }
     }
 
     [Benchmark(OperationsPerInvoke = N)]
     public void WideToNarrow10()
     {
+        var buffer = wide10;
         for (var i = 0; i < N; i++)
         {
-            KanaConverter.Convert(wide10, KanaOption.Narrow);
+            KanaConverter.Convert(buffer, KanaOption.Narrow);
         }
     }
 }
