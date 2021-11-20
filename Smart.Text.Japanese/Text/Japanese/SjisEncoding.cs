@@ -7,7 +7,9 @@ using System.Text;
 
 public static class SjisEncoding
 {
-    private static Encoding Encoding => Encoding.GetEncoding("Shift_JIS");
+#pragma warning disable IDE0032
+    private static readonly Encoding Encoding = Encoding.GetEncoding("Shift_JIS");
+#pragma warning restore IDE0032
 
     public static Encoding Instance
     {
