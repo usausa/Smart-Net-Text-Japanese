@@ -154,7 +154,7 @@ public static class SjisEncoding
         {
             if (byteCount == bytes.Length)
             {
-                Encoding.GetBytes(pString, chars.Length, pBytes, bytes.Length);
+                Encoding.GetBytes(pString, sourceLength, pBytes, bytes.Length);
             }
             else
             {
