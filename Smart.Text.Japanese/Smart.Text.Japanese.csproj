@@ -9,9 +9,9 @@
 
   <PropertyGroup>
     <PackageId>Usa.Smart.Text.Japanese</PackageId>
-    <Title>Smart.Text.Japanese .NET</Title>
-    <Description>Smart japanese text library for .NET</Description>
-    <Summary>Smart japanese text library for .NET</Summary>
+    <Title>Smart.Text.Japanese</Title>
+    <Description>Smart japanese text library</Description>
+    <Summary>Smart japanese text library</Summary>
     <PackageTags>smart text japanese</PackageTags>
   </PropertyGroup>
 

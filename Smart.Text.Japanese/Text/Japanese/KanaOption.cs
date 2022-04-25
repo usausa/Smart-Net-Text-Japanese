@@ -1,7 +1,5 @@
 namespace Smart.Text.Japanese;
 
-using System;
-
 [Flags]
 public enum KanaOption
 {

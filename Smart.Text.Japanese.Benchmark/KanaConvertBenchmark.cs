@@ -30,15 +30,11 @@ public class KanaConvertBenchmark
         "゛゜ー" +
         "。「」、・";
 
-    [AllowNull]
-    private string narrow1;
-    [AllowNull]
-    private string wide1;
+    private string narrow1 = default!;
+    private string wide1 = default!;
 
-    [AllowNull]
-    private string narrow10;
-    [AllowNull]
-    private string wide10;
+    private string narrow10 = default!;
+    private string wide10 = default!;
 
     [GlobalSetup]
     public void Setup()
