@@ -1,6 +1,5 @@
 namespace Smart.Text.Japanese.Benchmark;
 
-using System.Diagnostics.CodeAnalysis;
 using System.Text;
 
 using BenchmarkDotNet.Attributes;
