@@ -213,7 +213,7 @@ public static class SjisEncoding
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static IEnumerable<string> SplitLimitString(string str, int byteCount) => SplitLimitString(str, 0, byteCount);
 
-    [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Design", "CA1062:ValidateArgumentsOfPublicMethods", Justification = "Extensions")]
+#pragma warning disable CA1062
     public static IEnumerable<string> SplitLimitString(string str, int offset, int byteCount)
     {
         while (true)
@@ -229,4 +229,5 @@ public static class SjisEncoding
             offset += length;
         }
     }
+#pragma warning restore CA1062
 }
