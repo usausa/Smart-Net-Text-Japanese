@@ -22,9 +22,7 @@ public static class KanaConverter
         "をぁぃぅぇぉゃゅょっーあいうえおかきくけこさしすせそたちつてとなにぬねのはひふへほまみむめもやゆよらりるれろわん゛゜";
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-#if NET5_0_OR_GREATER
     [SkipLocalsInit]
-#endif
     public static unsafe string Convert(ReadOnlySpan<char> source, KanaOption option)
     {
         if (source.IsEmpty)
@@ -181,9 +179,7 @@ public static class KanaConverter
     }
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-#if NET5_0_OR_GREATER
     [SkipLocalsInit]
-#endif
     public static unsafe string ConvertToNarrow(ReadOnlySpan<char> source)
     {
         if (source.IsEmpty)
@@ -269,9 +265,7 @@ public static class KanaConverter
     }
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-#if NET5_0_OR_GREATER
     [SkipLocalsInit]
-#endif
     public static unsafe string ConvertToWide(ReadOnlySpan<char> source)
     {
         if (source.IsEmpty)

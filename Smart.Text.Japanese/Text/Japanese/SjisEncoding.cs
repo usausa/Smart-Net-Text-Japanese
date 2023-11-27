@@ -85,9 +85,7 @@ public static class SjisEncoding
     // Fixed bytes
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-#if NET5_0_OR_GREATER
     [SkipLocalsInit]
-#endif
     public static byte[] GetFixedBytes(ReadOnlySpan<char> chars, int byteCount, FixedAlignment alignment)
     {
         var bytes = new byte[byteCount];
@@ -96,9 +94,7 @@ public static class SjisEncoding
     }
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-#if NET5_0_OR_GREATER
     [SkipLocalsInit]
-#endif
     public static byte[] GetFixedBytes(ReadOnlySpan<char> chars, int byteCount, byte padding)
     {
         var bytes = new byte[byteCount];
@@ -107,9 +103,7 @@ public static class SjisEncoding
     }
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-#if NET5_0_OR_GREATER
     [SkipLocalsInit]
-#endif
     public static byte[] GetFixedBytes(ReadOnlySpan<char> chars, int byteCount, FixedAlignment alignment, byte padding)
     {
         var bytes = new byte[byteCount];
