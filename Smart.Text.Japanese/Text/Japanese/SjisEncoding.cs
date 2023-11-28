@@ -7,13 +7,13 @@ public static class SjisEncoding
 {
 #pragma warning disable IDE0032
     private static readonly Encoding Encoding = Encoding.GetEncoding("Shift_JIS");
-#pragma warning restore IDE0032
 
     public static Encoding Instance
     {
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         get => Encoding;
     }
+#pragma warning restore IDE0032
 
     // Shortcut
 
