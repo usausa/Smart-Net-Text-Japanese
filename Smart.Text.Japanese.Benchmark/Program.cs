@@ -17,7 +17,7 @@ public static class Program
     }
 }
 
-public class BenchmarkConfig : ManualConfig
+public sealed class BenchmarkConfig : ManualConfig
 {
     public BenchmarkConfig()
     {

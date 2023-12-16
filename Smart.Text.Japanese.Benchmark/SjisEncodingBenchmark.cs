@@ -5,7 +5,7 @@ using System.Text;
 using BenchmarkDotNet.Attributes;
 
 [Config(typeof(BenchmarkConfig))]
-public class SjisEncodingBenchmark
+public sealed class SjisEncodingBenchmark
 {
     private const int N = 1000;
 

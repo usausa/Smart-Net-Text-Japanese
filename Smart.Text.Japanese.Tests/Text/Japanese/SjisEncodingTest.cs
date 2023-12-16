@@ -3,9 +3,7 @@ namespace Smart.Text.Japanese;
 using System.Linq;
 using System.Text;
 
-using Xunit;
-
-public class SjisEncodingTest
+public sealed class SjisEncodingTest
 {
     public SjisEncodingTest()
     {

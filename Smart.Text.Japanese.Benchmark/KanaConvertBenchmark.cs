@@ -5,7 +5,7 @@ using System.Text;
 using BenchmarkDotNet.Attributes;
 
 [Config(typeof(BenchmarkConfig))]
-public class KanaConvertBenchmark
+public sealed class KanaConvertBenchmark
 {
     private const int N = 1000;
 
