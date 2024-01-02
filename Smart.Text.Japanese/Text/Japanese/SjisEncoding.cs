@@ -119,7 +119,7 @@ public static class SjisEncoding
     public static void GetFixedBytes(ReadOnlySpan<char> chars, Span<byte> bytes, byte padding) =>
         GetFixedBytes(chars, bytes, FixedAlignment.Left, padding);
 
-    public static unsafe void GetFixedBytes(ReadOnlySpan<char> chars, Span<byte> bytes, FixedAlignment alignment, byte padding)
+    public static void GetFixedBytes(ReadOnlySpan<char> chars, Span<byte> bytes, FixedAlignment alignment, byte padding)
     {
         if (chars.IsEmpty)
         {
@@ -141,33 +141,29 @@ public static class SjisEncoding
             byteCount += size;
         }
 
-        fixed (byte* pBytes = bytes)
-        fixed (char* pString = chars)
+        if (byteCount == bytes.Length)
         {
-            if (byteCount == bytes.Length)
+            Encoding.GetBytes(chars, bytes);
+        }
+        else
+        {
+            if (alignment == FixedAlignment.Left)
             {
-                Encoding.GetBytes(pString, sourceLength, pBytes, bytes.Length);
+                Encoding.GetBytes(chars[..sourceLength], bytes[..byteCount]);
+                bytes[byteCount..].Fill(padding);
+            }
+            else if (alignment == FixedAlignment.Right)
+            {
+                var fillLength = bytes.Length - byteCount;
+                Encoding.GetBytes(chars[..sourceLength], bytes.Slice(fillLength, byteCount));
+                bytes[..fillLength].Fill(padding);
             }
             else
             {
-                if (alignment == FixedAlignment.Left)
-                {
-                    Encoding.GetBytes(pString, sourceLength, pBytes, byteCount);
-                    bytes[byteCount..].Fill(padding);
-                }
-                else if (alignment == FixedAlignment.Right)
-                {
-                    var fillLength = bytes.Length - byteCount;
-                    Encoding.GetBytes(pString, sourceLength, pBytes + fillLength, byteCount);
-                    bytes[..fillLength].Fill(padding);
-                }
-                else
-                {
-                    var half = (bytes.Length - byteCount) / 2;
-                    bytes[..half].Fill(padding);
-                    Encoding.GetBytes(pString, sourceLength, pBytes + half, byteCount);
-                    bytes[(half + byteCount)..bytes.Length].Fill(padding);
-                }
+                var half = (bytes.Length - byteCount) / 2;
+                bytes[..half].Fill(padding);
+                Encoding.GetBytes(chars[..sourceLength], bytes.Slice(half, byteCount));
+                bytes[(half + byteCount)..bytes.Length].Fill(padding);
             }
         }
     }
@@ -202,6 +198,12 @@ public static class SjisEncoding
     public static string GetLimitString(string str, int offset, int byteCount)
     {
         return String.IsNullOrEmpty(str) ? str : str.Substring(offset, CalcLimitLength(str.AsSpan(offset), byteCount));
+    }
+
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public static ReadOnlySpan<char> GetLimitString(ReadOnlySpan<char> chars, int byteCount)
+    {
+        return chars.IsEmpty ? chars : chars[..CalcLimitLength(chars, byteCount)];
     }
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]

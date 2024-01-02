@@ -1,5 +1,6 @@
 namespace Smart.Text.Japanese;
 
+using System;
 using System.Buffers;
 using System.Runtime.CompilerServices;
 
@@ -7,23 +8,23 @@ public static class KanaConverter
 {
     // To KanaNarrow
 
-    private const string ToHankana =
-        "ｧｱｨｲｩｳｪｴｫｵｶｶｷｷｸｸｹｹｺｺｻｻｼｼｽｽｾｾｿｿﾀﾀﾁﾁｯﾂﾂﾃﾃﾄﾄﾅﾆﾇﾈﾉﾊﾊﾊﾋﾋﾋﾌﾌﾌﾍﾍﾍﾎﾎﾎﾏﾐﾑﾒﾓｬﾔｭﾕｮﾖﾗﾘﾙﾚﾛ ﾜ  ｦﾝｳ  ";
+    private static readonly char[] ToHankana =
+        "ｧｱｨｲｩｳｪｴｫｵｶｶｷｷｸｸｹｹｺｺｻｻｼｼｽｽｾｾｿｿﾀﾀﾁﾁｯﾂﾂﾃﾃﾄﾄﾅﾆﾇﾈﾉﾊﾊﾊﾋﾋﾋﾌﾌﾌﾍﾍﾍﾎﾎﾎﾏﾐﾑﾒﾓｬﾔｭﾕｮﾖﾗﾘﾙﾚﾛ ﾜ  ｦﾝｳ  ".ToCharArray();
 
-    private const string ToHankanaType =
-        "           ﾞ ﾞ ﾞ ﾞ ﾞ ﾞ ﾞ ﾞ ﾞ ﾞ ﾞ ﾞ  ﾞ ﾞ ﾞ      ﾞﾟ ﾞﾟ ﾞﾟ ﾞﾟ ﾞﾟ                      ﾞ  ";
+    private static readonly char[] ToHankanaType =
+        "           ﾞ ﾞ ﾞ ﾞ ﾞ ﾞ ﾞ ﾞ ﾞ ﾞ ﾞ ﾞ  ﾞ ﾞ ﾞ      ﾞﾟ ﾞﾟ ﾞﾟ ﾞﾟ ﾞﾟ                      ﾞ  ".ToCharArray();
 
     // To KanaWide
 
-    private const string ToKatakana =
-        "ヲァィゥェォャュョッーアイウエオカキクケコサシスセソタチツテトナニヌネノハヒフヘホマミムメモヤユヨラリルレロワン゛゜";
+    private static readonly char[] ToKatakana =
+        "ヲァィゥェォャュョッーアイウエオカキクケコサシスセソタチツテトナニヌネノハヒフヘホマミムメモヤユヨラリルレロワン゛゜".ToCharArray();
 
-    private const string ToHiragana =
-        "をぁぃぅぇぉゃゅょっーあいうえおかきくけこさしすせそたちつてとなにぬねのはひふへほまみむめもやゆよらりるれろわん゛゜";
+    private static readonly char[] ToHiragana =
+        "をぁぃぅぇぉゃゅょっーあいうえおかきくけこさしすせそたちつてとなにぬねのはひふへほまみむめもやゆよらりるれろわん゛゜".ToCharArray();
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     [SkipLocalsInit]
-    public static unsafe string Convert(ReadOnlySpan<char> source, KanaOption option)
+    public static string Convert(ReadOnlySpan<char> source, KanaOption option)
     {
         if (source.IsEmpty)
         {
@@ -32,38 +33,32 @@ public static class KanaConverter
 
         if (source.Length < 2048)
         {
-            var buffer = stackalloc char[source.Length * 2];
+            var buffer = (Span<char>)stackalloc char[source.Length * 2];
             var length = ConvertInternal(source, buffer, option);
-            return new string(buffer, 0, length);
+            return new string(buffer[..length]);
         }
         else
         {
             var buffer = ArrayPool<char>.Shared.Rent(source.Length * 2);
-            fixed (char* pBuffer = buffer)
-            {
-                var length = ConvertInternal(source, pBuffer, option);
-                var result = new string(pBuffer, 0, length);
-                ArrayPool<char>.Shared.Return(buffer);
-                return result;
-            }
+            var length = ConvertInternal(source, buffer, option);
+            var result = new string(buffer, 0, length);
+            ArrayPool<char>.Shared.Return(buffer);
+            return result;
         }
     }
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public static unsafe int Convert(ReadOnlySpan<char> source, Span<char> buffer, KanaOption option)
+    public static int Convert(ReadOnlySpan<char> source, Span<char> buffer, KanaOption option)
     {
         if (source.IsEmpty)
         {
             return 0;
         }
 
-        fixed (char* pBuffer = buffer)
-        {
-            return ConvertInternal(source, pBuffer, option);
-        }
+        return ConvertInternal(source, buffer, option);
     }
 
-    private static unsafe int ConvertInternal(ReadOnlySpan<char> source, char* buffer, KanaOption option)
+    private static int ConvertInternal(ReadOnlySpan<char> source, Span<char> buffer, KanaOption option)
     {
         var isSpaceToNarrow = (option & KanaOption.SpaceToNarrow) == KanaOption.SpaceToNarrow;
         var isSpaceToWide = (option & KanaOption.SpaceToWide) == KanaOption.SpaceToWide;
@@ -180,7 +175,7 @@ public static class KanaConverter
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     [SkipLocalsInit]
-    public static unsafe string ConvertToNarrow(ReadOnlySpan<char> source)
+    public static string ConvertToNarrow(ReadOnlySpan<char> source)
     {
         if (source.IsEmpty)
         {
@@ -189,38 +184,32 @@ public static class KanaConverter
 
         if (source.Length < 2048)
         {
-            var buffer = stackalloc char[source.Length * 2];
+            var buffer = (Span<char>)stackalloc char[source.Length * 2];
             var length = ConvertToNarrowInternal(source, buffer);
-            return new string(buffer, 0, length);
+            return new string(buffer[..length]);
         }
         else
         {
             var buffer = ArrayPool<char>.Shared.Rent(source.Length * 2);
-            fixed (char* pBuffer = buffer)
-            {
-                var length = ConvertToNarrowInternal(source, pBuffer);
-                var result = new string(pBuffer, 0, length);
-                ArrayPool<char>.Shared.Return(buffer);
-                return result;
-            }
+            var length = ConvertToNarrowInternal(source, buffer);
+            var result = new string(buffer, 0, length);
+            ArrayPool<char>.Shared.Return(buffer);
+            return result;
         }
     }
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public static unsafe int ConvertToNarrow(ReadOnlySpan<char> source, Span<char> buffer)
+    public static int ConvertToNarrow(ReadOnlySpan<char> source, Span<char> buffer)
     {
         if (source.IsEmpty)
         {
             return 0;
         }
 
-        fixed (char* pBuffer = buffer)
-        {
-            return ConvertToNarrowInternal(source, pBuffer);
-        }
+        return ConvertToNarrowInternal(source, buffer);
     }
 
-    private static unsafe int ConvertToNarrowInternal(ReadOnlySpan<char> source, char* buffer)
+    private static int ConvertToNarrowInternal(ReadOnlySpan<char> source, Span<char> buffer)
     {
         var pos = 0;
         for (var i = 0; i < source.Length; i++)
@@ -266,7 +255,7 @@ public static class KanaConverter
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     [SkipLocalsInit]
-    public static unsafe string ConvertToWide(ReadOnlySpan<char> source)
+    public static string ConvertToWide(ReadOnlySpan<char> source)
     {
         if (source.IsEmpty)
         {
@@ -275,38 +264,32 @@ public static class KanaConverter
 
         if (source.Length < 2048)
         {
-            var buffer = stackalloc char[source.Length * 2];
+            var buffer = (Span<char>)stackalloc char[source.Length * 2];
             var length = ConvertToWideInternal(source, buffer);
-            return new string(buffer, 0, length);
+            return new string(buffer[..length]);
         }
         else
         {
             var buffer = ArrayPool<char>.Shared.Rent(source.Length * 2);
-            fixed (char* pBuffer = buffer)
-            {
-                var length = ConvertToWideInternal(source, pBuffer);
-                var result = new string(pBuffer, 0, length);
-                ArrayPool<char>.Shared.Return(buffer);
-                return result;
-            }
+            var length = ConvertToWideInternal(source, buffer);
+            var result = new string(buffer, 0, length);
+            ArrayPool<char>.Shared.Return(buffer);
+            return result;
         }
     }
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public static unsafe int ConvertToWide(ReadOnlySpan<char> source, Span<char> buffer)
+    public static int ConvertToWide(ReadOnlySpan<char> source, Span<char> buffer)
     {
         if (source.IsEmpty)
         {
             return 0;
         }
 
-        fixed (char* pBuffer = buffer)
-        {
-            return ConvertToWideInternal(source, pBuffer);
-        }
+        return ConvertToWideInternal(source, buffer);
     }
 
-    private static unsafe int ConvertToWideInternal(ReadOnlySpan<char> source, char* buffer)
+    private static int ConvertToWideInternal(ReadOnlySpan<char> source, Span<char> buffer)
     {
         var pos = 0;
         for (var i = 0; i < source.Length; i++)
@@ -354,7 +337,7 @@ public static class KanaConverter
     // ASCII
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    private static unsafe bool AsciiToNarrow(char c, char* buffer, ref int pos)
+    private static bool AsciiToNarrow(char c, Span<char> buffer, ref int pos)
     {
         // ’
         if (c == 0x2019)
@@ -462,7 +445,7 @@ public static class KanaConverter
     }
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    private static unsafe bool AsciiToWide(char c, char* buffer, ref int pos)
+    private static bool AsciiToWide(char c, Span<char> buffer, ref int pos)
     {
         // !"#$%&'()*+,-./
         if (c < 0x0021)
@@ -518,7 +501,7 @@ public static class KanaConverter
     // Numeric
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    private static unsafe bool NumericToNarrow(char c, char* buffer, ref int pos)
+    private static bool NumericToNarrow(char c, Span<char> buffer, ref int pos)
     {
         // ０-９
         if ((c >= 0xFF10) && (c <= 0xFF19))
@@ -531,7 +514,7 @@ public static class KanaConverter
     }
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    private static unsafe bool NumericToWide(char c, char* buffer, ref int pos)
+    private static bool NumericToWide(char c, Span<char> buffer, ref int pos)
     {
         // 0-9
         if ((c >= 0x0030) && (c <= 0x0039))
@@ -546,7 +529,7 @@ public static class KanaConverter
     // Roman
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    private static unsafe bool RomanToNarrow(char c, char* buffer, ref int pos)
+    private static bool RomanToNarrow(char c, Span<char> buffer, ref int pos)
     {
         // Ａ-Ｚ
         if (c < 0xFF21)
@@ -576,7 +559,7 @@ public static class KanaConverter
     }
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    private static unsafe bool RomanToWide(char c, char* buffer, ref int pos)
+    private static bool RomanToWide(char c, Span<char> buffer, ref int pos)
     {
         // A-Z
         if (c < 0x0041)
@@ -608,7 +591,7 @@ public static class KanaConverter
     // Hiragana/Katakana
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    private static unsafe bool KatakanaToHiragana(char c, char* buffer, ref int pos)
+    private static bool KatakanaToHiragana(char c, Span<char> buffer, ref int pos)
     {
         // ァ-ヶ
         if (c < 0x30A1)
@@ -635,7 +618,7 @@ public static class KanaConverter
     }
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    private static unsafe bool HiraganaToKatakana(char c, char* buffer, ref int pos)
+    private static bool HiraganaToKatakana(char c, Span<char> buffer, ref int pos)
     {
         // ぁ-ゖ
         if (c < 0x3041)
@@ -664,7 +647,7 @@ public static class KanaConverter
     // Hankana/Katakana
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    private static unsafe bool KatakanaToHankana(char c, char* buffer, ref int pos)
+    private static bool KatakanaToHankana(char c, Span<char> buffer, ref int pos)
     {
         // ァ-ヶ
         if ((c >= 0x30A1) && (c <= 0x30F6))
@@ -710,7 +693,7 @@ public static class KanaConverter
     }
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    private static unsafe bool HankanaToKatakana(char c, char next, ref int index, char* buffer, ref int pos)
+    private static bool HankanaToKatakana(char c, char next, ref int index, Span<char> buffer, ref int pos)
     {
         if (next == 'ﾞ')
         {
@@ -779,7 +762,7 @@ public static class KanaConverter
     // Hankana/Hiragana
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    private static unsafe bool HiraganaToHankana(char c, char* buffer, ref int pos)
+    private static bool HiraganaToHankana(char c, Span<char> buffer, ref int pos)
     {
         // ァ-ヶ
         if ((c >= 0x3041) && (c <= 0x3096))
@@ -825,7 +808,7 @@ public static class KanaConverter
     }
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    private static unsafe bool HankanaToHiragana(char c, char next, ref int index, char* buffer, ref int pos)
+    private static bool HankanaToHiragana(char c, char next, ref int index, Span<char> buffer, ref int pos)
     {
         if (next == 'ﾞ')
         {
@@ -894,7 +877,7 @@ public static class KanaConverter
     // Kana common
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    private static unsafe bool KanaSymbolToNarrow(char c, char* buffer, ref int pos)
+    private static bool KanaSymbolToNarrow(char c, Span<char> buffer, ref int pos)
     {
         if (c == 'ー')
         {
@@ -948,7 +931,7 @@ public static class KanaConverter
     }
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    private static unsafe bool HankanaSymbolToWide(char c, char* buffer, ref int pos)
+    private static bool HankanaSymbolToWide(char c, Span<char> buffer, ref int pos)
     {
         if ((c >= 0xFF61) && (c <= 0xFF65))
         {

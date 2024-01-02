@@ -5,7 +5,7 @@ using System.Text;
 using BenchmarkDotNet.Attributes;
 
 [Config(typeof(BenchmarkConfig))]
-public sealed class KanaConvertBenchmark
+public class KanaConvertBenchmark
 {
     private const int N = 1000;
 
@@ -109,6 +109,66 @@ public sealed class KanaConvertBenchmark
         for (var i = 0; i < N; i++)
         {
             KanaConverter.Convert(buffer, KanaOption.Narrow);
+        }
+    }
+
+    [Benchmark(OperationsPerInvoke = N)]
+    public void NarrowToWide1Old()
+    {
+        var buffer = narrow1;
+        for (var i = 0; i < N; i++)
+        {
+            KanaConverterOld.Convert(buffer, KanaOption.Wide);
+        }
+    }
+
+    [Benchmark(OperationsPerInvoke = N)]
+    public void NarrowToWide1OptimizedOld()
+    {
+        var buffer = narrow1;
+        for (var i = 0; i < N; i++)
+        {
+            KanaConverterOld.ConvertToWide(buffer);
+        }
+    }
+
+    [Benchmark(OperationsPerInvoke = N)]
+    public void NarrowToWide10Old()
+    {
+        var buffer = narrow10;
+        for (var i = 0; i < N; i++)
+        {
+            KanaConverterOld.Convert(buffer, KanaOption.Wide);
+        }
+    }
+
+    [Benchmark(OperationsPerInvoke = N)]
+    public void WideToNarrow1Old()
+    {
+        var buffer = wide1;
+        for (var i = 0; i < N; i++)
+        {
+            KanaConverterOld.Convert(buffer, KanaOption.Narrow);
+        }
+    }
+
+    [Benchmark(OperationsPerInvoke = N)]
+    public void WideToNarrow1OptimizedOld()
+    {
+        var buffer = wide1;
+        for (var i = 0; i < N; i++)
+        {
+            KanaConverterOld.ConvertToNarrow(buffer);
+        }
+    }
+
+    [Benchmark(OperationsPerInvoke = N)]
+    public void WideToNarrow10Old()
+    {
+        var buffer = wide10;
+        for (var i = 0; i < N; i++)
+        {
+            KanaConverterOld.Convert(buffer, KanaOption.Narrow);
         }
     }
 }
