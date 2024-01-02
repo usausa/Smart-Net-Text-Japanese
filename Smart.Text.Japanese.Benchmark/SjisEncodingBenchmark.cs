@@ -40,31 +40,4 @@ public class SjisEncodingBenchmark
             SjisEncoding.GetFixedBytes("あA", 8, FixedAlignment.Center);
         }
     }
-
-    [Benchmark(OperationsPerInvoke = N)]
-    public void PadLeftOld()
-    {
-        for (var i = 0; i < N; i++)
-        {
-            SjisEncodingOld.GetFixedBytes("あA", 8, FixedAlignment.Left);
-        }
-    }
-
-    [Benchmark(OperationsPerInvoke = N)]
-    public void PadRightOld()
-    {
-        for (var i = 0; i < N; i++)
-        {
-            SjisEncodingOld.GetFixedBytes("あA", 8, FixedAlignment.Right);
-        }
-    }
-
-    [Benchmark(OperationsPerInvoke = N)]
-    public void PaddingCenterOld()
-    {
-        for (var i = 0; i < N; i++)
-        {
-            SjisEncodingOld.GetFixedBytes("あA", 8, FixedAlignment.Center);
-        }
-    }
 }
