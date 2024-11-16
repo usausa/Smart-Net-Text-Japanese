@@ -1,6 +1,6 @@
 # Smart.Text.Japanese .NET - japanese text library for .NET
 
-[![NuGet Badge](https://buildstats.info/nuget/Usa.Smart.Text.Japanese)](https://www.nuget.org/packages/Usa.Smart.Text.Japanese/)
+[![NuGet](https://img.shields.io/nuget/v/Usa.Smart.Text.Japanese.svg)](https://www.nuget.org/packages/Usa.Smart.Text.Japanese)
 
 ## What is this?
 
