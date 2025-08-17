@@ -163,7 +163,7 @@ public static class SjisEncoding
                 var half = (bytes.Length - byteCount) / 2;
                 bytes[..half].Fill(padding);
                 Encoding.GetBytes(chars[..sourceLength], bytes.Slice(half, byteCount));
-                bytes[(half + byteCount)..bytes.Length].Fill(padding);
+                bytes[(half + byteCount)..].Fill(padding);
             }
         }
     }
