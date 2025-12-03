@@ -6,6 +6,8 @@ using System.Runtime.CompilerServices;
 
 public static class KanaConverter
 {
+    private const int StackAllocThreshold = 2048;
+
     // To KanaNarrow
 
     private static readonly char[] ToHankana =
@@ -31,7 +33,7 @@ public static class KanaConverter
             return string.Empty;
         }
 
-        if (source.Length < 2048)
+        if (source.Length < StackAllocThreshold)
         {
             var buffer = (Span<char>)stackalloc char[source.Length * 2];
             var length = ConvertInternal(source, buffer, option);
@@ -58,22 +60,25 @@ public static class KanaConverter
         return ConvertInternal(source, buffer, option);
     }
 
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    private static bool HasFlag(KanaOption option, KanaOption value) => (option & value) == value;
+
     private static int ConvertInternal(ReadOnlySpan<char> source, Span<char> buffer, KanaOption option)
     {
-        var isSpaceToNarrow = (option & KanaOption.SpaceToNarrow) == KanaOption.SpaceToNarrow;
-        var isSpaceToWide = (option & KanaOption.SpaceToWide) == KanaOption.SpaceToWide;
-        var isNumericToNarrow = (option & KanaOption.NumericToNarrow) == KanaOption.NumericToNarrow;
-        var isNumericToWide = (option & KanaOption.NumericToWide) == KanaOption.NumericToWide;
-        var isRomanToNarrow = (option & KanaOption.RomanToNarrow) == KanaOption.RomanToNarrow;
-        var isRomanToWide = (option & KanaOption.RomanToWide) == KanaOption.RomanToWide;
-        var isAsciiToNarrow = (option & KanaOption.AsciiToNarrow) == KanaOption.AsciiToNarrow;
-        var isAsciiToWide = (option & KanaOption.AsciiToWide) == KanaOption.AsciiToWide;
-        var isKatakanaToHiragana = (option & KanaOption.KatakanaToHiragana) == KanaOption.KatakanaToHiragana;
-        var isHiraganaToKatakana = (option & KanaOption.HiraganaToKatakana) == KanaOption.HiraganaToKatakana;
-        var isKatakanaToHankana = (option & KanaOption.KatakanaToHankana) == KanaOption.KatakanaToHankana;
-        var isHankanaToKatakana = (option & KanaOption.HankanaToKatakana) == KanaOption.HankanaToKatakana;
-        var isHiraganaToHankana = (option & KanaOption.HiraganaToHankana) == KanaOption.HiraganaToHankana;
-        var isHankanaToHiragana = (option & KanaOption.HankanaToHiragana) == KanaOption.HankanaToHiragana;
+        var isSpaceToNarrow = HasFlag(option, KanaOption.SpaceToNarrow);
+        var isSpaceToWide = HasFlag(option, KanaOption.SpaceToWide);
+        var isNumericToNarrow = HasFlag(option, KanaOption.NumericToNarrow);
+        var isNumericToWide = HasFlag(option, KanaOption.NumericToWide);
+        var isRomanToNarrow = HasFlag(option, KanaOption.RomanToNarrow);
+        var isRomanToWide = HasFlag(option, KanaOption.RomanToWide);
+        var isAsciiToNarrow = HasFlag(option, KanaOption.AsciiToNarrow);
+        var isAsciiToWide = HasFlag(option, KanaOption.AsciiToWide);
+        var isKatakanaToHiragana = HasFlag(option, KanaOption.KatakanaToHiragana);
+        var isHiraganaToKatakana = HasFlag(option, KanaOption.HiraganaToKatakana);
+        var isKatakanaToHankana = HasFlag(option, KanaOption.KatakanaToHankana);
+        var isHankanaToKatakana = HasFlag(option, KanaOption.HankanaToKatakana);
+        var isHiraganaToHankana = HasFlag(option, KanaOption.HiraganaToHankana);
+        var isHankanaToHiragana = HasFlag(option, KanaOption.HankanaToHiragana);
 
         var pos = 0;
         for (var i = 0; i < source.Length; i++)
@@ -182,7 +187,7 @@ public static class KanaConverter
             return string.Empty;
         }
 
-        if (source.Length < 2048)
+        if (source.Length < StackAllocThreshold)
         {
             var buffer = (Span<char>)stackalloc char[source.Length * 2];
             var length = ConvertToNarrowInternal(source, buffer);
@@ -262,7 +267,7 @@ public static class KanaConverter
             return string.Empty;
         }
 
-        if (source.Length < 2048)
+        if (source.Length < StackAllocThreshold)
         {
             var buffer = (Span<char>)stackalloc char[source.Length * 2];
             var length = ConvertToWideInternal(source, buffer);
