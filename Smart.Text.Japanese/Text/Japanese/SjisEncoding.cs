@@ -170,18 +170,19 @@ public static class SjisEncoding
 
     // Split
 
-    private static int CalcLimitLength(ReadOnlySpan<char> chars, int limit)
+    internal static int CalcLimitLength(ReadOnlySpan<char> chars, int limit)
     {
         var length = 0;
         var byteCount = 0;
         while (length < chars.Length)
         {
-            byteCount += IsSingleByte(chars[length]) ? 1 : 2;
-            if (byteCount > limit)
+            var size = IsSingleByte(chars[length]) ? 1 : 2;
+            if (byteCount + size > limit)
             {
                 break;
             }
 
+            byteCount += size;
             length++;
         }
 
@@ -207,23 +208,56 @@ public static class SjisEncoding
     }
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public static IEnumerable<string> SplitLimitString(string str, int byteCount) => SplitLimitString(str, 0, byteCount);
+    public static SjisSplitEnumerator SplitLimitString(ReadOnlySpan<char> chars, int byteCount) =>
+        new(chars, byteCount);
 
-#pragma warning disable CA1062
-    public static IEnumerable<string> SplitLimitString(string str, int offset, int byteCount)
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public static SjisSplitEnumerator SplitLimitString(string str, int byteCount) =>
+        SplitLimitString(str, 0, byteCount);
+
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public static SjisSplitEnumerator SplitLimitString(string str, int offset, int byteCount)
     {
-        while (true)
+        if ((uint)offset > (uint)str.Length)
         {
-            var length = CalcLimitLength(str.AsSpan(offset), byteCount);
-            if (length == 0)
-            {
-                break;
-            }
-
-            yield return str.Substring(offset, length);
-
-            offset += length;
+            throw new ArgumentOutOfRangeException(nameof(offset));
         }
+
+        return SplitLimitString(str.AsSpan(offset), byteCount);
     }
-#pragma warning restore CA1062
+}
+
+public ref struct SjisSplitEnumerator
+{
+    private ReadOnlySpan<char> remaining;
+    private readonly int byteCount;
+
+    public ReadOnlySpan<char> Current { get; private set; }
+
+    internal SjisSplitEnumerator(ReadOnlySpan<char> chars, int byteCount)
+    {
+        remaining = chars;
+        this.byteCount = byteCount;
+        Current = default;
+    }
+
+    public readonly SjisSplitEnumerator GetEnumerator() => this;
+
+    public bool MoveNext()
+    {
+        if (remaining.IsEmpty)
+        {
+            return false;
+        }
+
+        var length = SjisEncoding.CalcLimitLength(remaining, byteCount);
+        if (length == 0)
+        {
+            return false;
+        }
+
+        Current = remaining[..length];
+        remaining = remaining[length..];
+        return true;
+    }
 }
