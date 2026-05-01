@@ -1,6 +1,5 @@
 namespace Smart.Text.Japanese;
 
-using System.Linq;
 using System.Text;
 
 public sealed class SjisEncodingTest
