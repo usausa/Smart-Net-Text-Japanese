@@ -229,8 +229,9 @@ public static class SjisEncoding
 
 public ref struct SjisSplitEnumerator
 {
-    private ReadOnlySpan<char> remaining;
     private readonly int byteCount;
+
+    private ReadOnlySpan<char> remaining;
 
     public ReadOnlySpan<char> Current { get; private set; }
 
