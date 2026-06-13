@@ -6,7 +6,7 @@ using System.Text;
 public static class SjisEncoding
 {
 #pragma warning disable IDE0032
-    private static readonly Encoding Encoding = Encoding.GetEncoding("Shift_JIS");
+    private static readonly Encoding Encoding = CreateEncoding();
 
     public static Encoding Instance
     {
@@ -14,6 +14,12 @@ public static class SjisEncoding
         get => Encoding;
     }
 #pragma warning restore IDE0032
+
+    private static Encoding CreateEncoding()
+    {
+        Encoding.RegisterProvider(CodePagesEncodingProvider.Instance);
+        return Encoding.GetEncoding("Shift_JIS");
+    }
 
     // Shortcut
 

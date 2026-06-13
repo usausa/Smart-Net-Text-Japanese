@@ -1,14 +1,7 @@
 namespace Smart.Text.Japanese;
 
-using System.Text;
-
 public sealed class SjisEncodingTest
 {
-    public SjisEncodingTest()
-    {
-        Encoding.RegisterProvider(CodePagesEncodingProvider.Instance);
-    }
-
     // Fixed bytes
 
     [Fact]
