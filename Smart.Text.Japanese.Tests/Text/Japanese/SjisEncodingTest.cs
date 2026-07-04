@@ -51,6 +51,22 @@ public sealed class SjisEncodingTest
         Assert.Equal(SjisEncoding.GetBytes("A         "), SjisEncoding.GetFixedBytes("A", 10, FixedAlignment.Left));
     }
 
+    [Fact]
+    public void FixedAlignmentHankana()
+    {
+        Assert.Equal(SjisEncoding.GetBytes("ｱ  "), SjisEncoding.GetFixedBytes("ｱ", 3, FixedAlignment.Left));
+        Assert.Equal(SjisEncoding.GetBytes("ｱA  "), SjisEncoding.GetFixedBytes("ｱA", 4, FixedAlignment.Left));
+        Assert.Equal(SjisEncoding.GetBytes("Aｱ  "), SjisEncoding.GetFixedBytes("Aｱ", 4, FixedAlignment.Left));
+        Assert.Equal(SjisEncoding.GetBytes("ｱあ "), SjisEncoding.GetFixedBytes("ｱあ", 4, FixedAlignment.Left));
+
+        Assert.Equal(SjisEncoding.GetBytes("ｶﾞ  "), SjisEncoding.GetFixedBytes("ｶﾞ", 4, FixedAlignment.Left));
+
+        Assert.Equal(SjisEncoding.GetBytes("ｱ "), SjisEncoding.GetFixedBytes("ｱあ", 2, FixedAlignment.Left));
+
+        Assert.Equal(SjisEncoding.GetBytes("  ｱ"), SjisEncoding.GetFixedBytes("ｱ", 3, FixedAlignment.Right));
+        Assert.Equal(SjisEncoding.GetBytes(" ｱ "), SjisEncoding.GetFixedBytes("ｱ", 3, FixedAlignment.Center));
+    }
+
     // Split
 
     [Fact]
@@ -62,5 +78,18 @@ public sealed class SjisEncodingTest
         Assert.Equal("あA", SjisEncoding.GetLimitString("あAあAあA", 0, 4));
         Assert.Equal("あAあ", SjisEncoding.GetLimitString("あAあAあA", 0, 5));
         Assert.Equal("あAあA", SjisEncoding.GetLimitString("あAあAあA", 0, 6));
+    }
+
+    [Fact]
+    public void GetLimitStringHankana()
+    {
+        Assert.Equal(string.Empty, SjisEncoding.GetLimitString("ｱAあ", 0, 0));
+        Assert.Equal("ｱ", SjisEncoding.GetLimitString("ｱAあ", 0, 1));
+        Assert.Equal("ｱA", SjisEncoding.GetLimitString("ｱAあ", 0, 2));
+        Assert.Equal("ｱA", SjisEncoding.GetLimitString("ｱAあ", 0, 3));
+        Assert.Equal("ｱAあ", SjisEncoding.GetLimitString("ｱAあ", 0, 4));
+
+        Assert.Equal("ｶ", SjisEncoding.GetLimitString("ｶﾞ", 0, 1));
+        Assert.Equal("ｶﾞ", SjisEncoding.GetLimitString("ｶﾞ", 0, 2));
     }
 }

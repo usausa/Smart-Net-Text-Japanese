@@ -86,7 +86,7 @@ public static class SjisEncoding
     // Calc
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public static bool IsSingleByte(char c) => (c <= 128) || ((c >= 0xF8F0) && (c <= 0xF8F3));
+    public static bool IsSingleByte(char c) => (c <= 128) || ((c >= 0xF8F0) && (c <= 0xF8F3)) || ((c >= 0xFF61) && (c <= 0xFF9F));
 
     // Fixed bytes
 
