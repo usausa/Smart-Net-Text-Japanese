@@ -15,5 +15,5 @@
   </Folder>
   <Project Path="Smart.Text.Japanese/Smart.Text.Japanese.csproj" />
   <Project Path="Smart.Text.Japanese.Tests/Smart.Text.Japanese.Tests.csproj" />
-  <Project Path="Smart.Text.Japanese.Benchmark/Smart.Text.Japanese.Benchmark.csproj" />
+  <Project Path="Smart.Text.Japanese.Benchmark/Smart.Text.Japanese.Benchmark.csproj" DefaultStartup="true" />
 </Solution>
