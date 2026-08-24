@@ -1,5 +1,6 @@
 namespace Smart.Text.Japanese;
 
+using System.Diagnostics.CodeAnalysis;
 using System.Runtime.CompilerServices;
 using System.Text;
 
@@ -226,11 +227,15 @@ public static class SjisEncoding
     {
         if ((uint)offset > (uint)str.Length)
         {
-            throw new ArgumentOutOfRangeException(nameof(offset));
+            ThrowOffsetOutOfRange();
         }
 
         return SplitLimitString(str.AsSpan(offset), byteCount);
     }
+
+    [DoesNotReturn]
+    [MethodImpl(MethodImplOptions.NoInlining)]
+    private static void ThrowOffsetOutOfRange() => throw new ArgumentOutOfRangeException("offset");
 }
 
 public ref struct SjisSplitEnumerator
