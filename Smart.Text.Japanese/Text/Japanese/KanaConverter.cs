@@ -86,13 +86,13 @@ public static class KanaConverter
             var c = source[i];
 
             // Space
-            if (isSpaceToNarrow && c == '　')
+            if (isSpaceToNarrow && (c == '　'))
             {
                 buffer[pos++] = ' ';
                 continue;
             }
 
-            if (isSpaceToWide && c == ' ')
+            if (isSpaceToWide && (c == ' '))
             {
                 buffer[pos++] = '　';
                 continue;

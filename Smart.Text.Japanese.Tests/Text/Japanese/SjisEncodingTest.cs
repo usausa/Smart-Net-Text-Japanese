@@ -243,6 +243,6 @@ public sealed class SjisEncodingTest
             result.Add(segment.ToString());
         }
 
-        return string.Join('|', result);
+        return String.Join('|', result);
     }
 }
