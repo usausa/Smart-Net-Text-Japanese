@@ -217,10 +217,8 @@ public static class KanaConverter
     private static int ConvertToNarrowInternal(ReadOnlySpan<char> source, Span<char> buffer)
     {
         var pos = 0;
-        for (var i = 0; i < source.Length; i++)
+        foreach (var c in source)
         {
-            var c = source[i];
-
             // Space
             if (c == '　')
             {
