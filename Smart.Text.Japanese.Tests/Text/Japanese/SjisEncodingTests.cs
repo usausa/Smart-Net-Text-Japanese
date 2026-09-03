@@ -1,6 +1,6 @@
 namespace Smart.Text.Japanese;
 
-public sealed class SjisEncodingTest
+public sealed class SjisEncodingTests
 {
     // Calc
 

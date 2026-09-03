@@ -1,6 +1,6 @@
 namespace Smart.Text.Japanese;
 
-public sealed class KanaConverterTest
+public sealed class KanaConverterTests
 {
     // Roman
 
