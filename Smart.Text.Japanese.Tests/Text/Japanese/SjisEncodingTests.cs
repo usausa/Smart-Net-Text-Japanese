@@ -124,6 +124,29 @@ public sealed class SjisEncodingTests
         Assert.Equal(SjisEncoding.GetBytes("**A"), SjisEncoding.GetFixedBytes("A", 3, FixedAlignment.Right, (byte)'*'));
     }
 
+    [Fact]
+    public void GetFixedBytesTruncate()
+    {
+        // Exact fit: the characters that do not fit are dropped
+        Assert.Equal(SjisEncoding.GetBytes("ABC"), SjisEncoding.GetFixedBytes("ABCDE", 3, FixedAlignment.Left));
+        Assert.Equal(SjisEncoding.GetBytes("あい"), SjisEncoding.GetFixedBytes("あいう", 4, FixedAlignment.Left));
+
+        // 2-byte う does not fit in the remaining 1 byte
+        Assert.Equal(SjisEncoding.GetBytes("あい "), SjisEncoding.GetFixedBytes("あいう", 5, FixedAlignment.Left));
+    }
+
+    [Fact]
+    public void GetFixedBytesUnmappable()
+    {
+        // 한 is outside Shift-JIS and becomes a single '?', and the padding fills the real remainder
+        Assert.Equal(SjisEncoding.GetBytes("?a    "), SjisEncoding.GetFixedBytes("한a", 6, FixedAlignment.Left));
+        Assert.Equal(SjisEncoding.GetBytes("    ?a"), SjisEncoding.GetFixedBytes("한a", 6, FixedAlignment.Right));
+        Assert.Equal(SjisEncoding.GetBytes("  ?a  "), SjisEncoding.GetFixedBytes("한a", 6, FixedAlignment.Center));
+
+        // A surrogate pair becomes "??"
+        Assert.Equal(SjisEncoding.GetBytes("??a     "), SjisEncoding.GetFixedBytes("𠮷a", 8, FixedAlignment.Left));
+    }
+
     // Split
 
     [Fact]
