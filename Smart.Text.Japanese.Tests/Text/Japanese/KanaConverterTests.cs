@@ -24,7 +24,7 @@ public sealed class KanaConverterTests
         "!\"#$%&'()*+,-./:;<=>?@[\\]^_`{|}~";
 
     private const string AsciiWide =
-        "！”＃＄％＆’（）＊＋，－．／：；＜＝＞？＠［￥］＾＿｀｛｜｝￣";
+        "！”＃＄％＆’（）＊＋，－．／：；＜＝＞？＠［￥］＾＿｀｛｜｝～";
 
     // Space
 
@@ -121,6 +121,90 @@ public sealed class KanaConverterTests
     public void TestSpaceNarrowToWide()
     {
         Assert.Equal(SpaceWide, KanaConverter.Convert(SpaceNarrow, KanaOption.SpaceToWide));
+    }
+
+    // Characters without a wide form of their own
+
+    [Fact]
+    public void TestEveryFullwidthFormToNarrow()
+    {
+        for (var c = '！'; c <= '～'; c++)
+        {
+            Assert.Equal(((char)(c - 0xFEE0)).ToString(), KanaConverter.Convert(c.ToString(), KanaOption.Narrow));
+        }
+    }
+
+    [Fact]
+    public void TestFullwidthSymbolsToNarrow()
+    {
+        Assert.Equal("\"'\\~", KanaConverter.Convert("＂＇＼～", KanaOption.AsciiToNarrow));
+        Assert.Equal("\"'\\~", KanaConverter.ConvertToNarrow("＂＇＼～"));
+    }
+
+    [Fact]
+    public void TestQuotesToNarrow()
+    {
+        Assert.Equal("\"\"''", KanaConverter.Convert("“”‘’", KanaOption.AsciiToNarrow));
+        Assert.Equal("\"\"''", KanaConverter.ConvertToNarrow("“”‘’"));
+    }
+
+    [Fact]
+    public void TestOtherFormsOfJisCharactersToNarrow()
+    {
+        Assert.Equal("~-", KanaConverter.Convert("〜−", KanaOption.AsciiToNarrow));
+        Assert.Equal("~-", KanaConverter.ConvertToNarrow("〜−"));
+    }
+
+    [Fact]
+    public void TestYenAndOverlineToNarrow()
+    {
+        Assert.Equal("\\~", KanaConverter.Convert("￥￣", KanaOption.AsciiToNarrow));
+    }
+
+    [Fact]
+    public void TestAsciiToWideKeepsJisCharacters()
+    {
+        Assert.Equal("”’￥～", KanaConverter.Convert("\"'\\~", KanaOption.AsciiToWide));
+    }
+
+    [Fact]
+    public void TestYenToWide()
+    {
+        Assert.Equal("￥", KanaConverter.Convert("¥", KanaOption.AsciiToWide));
+        Assert.Equal("￥", KanaConverter.ConvertToWide("¥"));
+        Assert.Equal("¥", KanaConverter.Convert("¥", KanaOption.AsciiToNarrow));
+    }
+
+    [Fact]
+    public void TestCombiningMarksToNarrow()
+    {
+        Assert.Equal("ｶﾞﾊﾟｱﾞ", KanaConverter.Convert("カ\u3099ハ\u309Aア\u3099", KanaOption.KatakanaToHankana));
+        Assert.Equal("ｶﾞﾊﾟ", KanaConverter.Convert("か\u3099は\u309A", KanaOption.HiraganaToHankana));
+        Assert.Equal("ｶﾞﾊﾟ", KanaConverter.ConvertToNarrow("カ\u3099ハ\u309A"));
+    }
+
+    // WidthFold
+
+    [Fact]
+    public void TestWidthFold()
+    {
+        Assert.Equal("A1! ガ", KanaConverter.Convert("Ａ１！　ｶﾞ", KanaOption.WidthFold));
+        Assert.Equal("東京都あいうアイウ", KanaConverter.Convert("東京都あいうｱｲｳ", KanaOption.WidthFold));
+    }
+
+    // Characters no conversion touches
+
+    [Fact]
+    public void TestUntouchedCharacters()
+    {
+        const string text = "ABC abc 123 東京都 あいう アイウ";
+
+        Assert.Equal(text, KanaConverter.Convert(text, default));
+        Assert.Equal("ＡＢＣ ａｂｃ １２３ 東京都 あいう アイウ", KanaConverter.Convert(text, KanaOption.RomanToWide | KanaOption.NumericToWide));
+        Assert.Equal("ABC abc 123 東京都 アイウ アイウ", KanaConverter.Convert(text, KanaOption.HiraganaToKatakana));
+        Assert.Equal("ABC abc 123 東京都 あいう あいう", KanaConverter.Convert(text, KanaOption.KatakanaToHiragana));
+        Assert.Equal("ABC abc 123 東京都 あいう ｱｲｳ", KanaConverter.Convert(text, KanaOption.KatakanaToHankana));
+        Assert.Equal("ABC abc 123 東京都 ｱｲｳ アイウ", KanaConverter.Convert(text, KanaOption.HiraganaToHankana));
     }
 
     // ------------------------------------------------------------

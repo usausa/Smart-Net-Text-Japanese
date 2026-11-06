@@ -3,6 +3,7 @@ namespace Smart.Text.Japanese;
 using System;
 using System.Buffers;
 using System.Runtime.CompilerServices;
+using System.Text;
 
 public static class KanaConverter
 {
@@ -33,6 +34,11 @@ public static class KanaConverter
             return string.Empty;
         }
 
+        if (HasFlag(option, KanaOption.Nfkc))
+        {
+            return ConvertNfkc(source, option & ~KanaOption.Nfkc);
+        }
+
         if (source.Length < StackAllocThreshold)
         {
             var buffer = (Span<char>)stackalloc char[source.Length * 2];
@@ -57,11 +63,29 @@ public static class KanaConverter
             return 0;
         }
 
-        return ConvertInternal(source, buffer, option);
+        return HasFlag(option, KanaOption.Nfkc)
+            ? ConvertNfkc(source, buffer, option & ~KanaOption.Nfkc)
+            : ConvertInternal(source, buffer, option);
     }
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     private static bool HasFlag(KanaOption option, KanaOption value) => (option & value) == value;
+
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    private static bool IsUntouched(char c, bool isAsciiUntouched, bool isKanaUntouched)
+    {
+        if (c >= 0xA000)
+        {
+            return false;
+        }
+
+        if (c < 0x0080)
+        {
+            return isAsciiUntouched;
+        }
+
+        return (c >= 0x4E00) || (isKanaUntouched && (c >= 0x3041) && (c <= 0x30FF));
+    }
 
     private static int ConvertInternal(ReadOnlySpan<char> source, Span<char> buffer, KanaOption option)
     {
@@ -79,11 +103,19 @@ public static class KanaConverter
         var isHankanaToKatakana = HasFlag(option, KanaOption.HankanaToKatakana);
         var isHiraganaToHankana = HasFlag(option, KanaOption.HiraganaToHankana);
         var isHankanaToHiragana = HasFlag(option, KanaOption.HankanaToHiragana);
+        var isAsciiUntouched = !isSpaceToWide && !isNumericToWide && !isRomanToWide && !isAsciiToWide;
+        var isKanaUntouched = !isKatakanaToHiragana && !isHiraganaToKatakana && !isKatakanaToHankana && !isHiraganaToHankana;
 
         var pos = 0;
         for (var i = 0; i < source.Length; i++)
         {
             var c = source[i];
+
+            if (IsUntouched(c, isAsciiUntouched, isKanaUntouched))
+            {
+                buffer[pos++] = c;
+                continue;
+            }
 
             // Space
             if (isSpaceToNarrow && (c == '　'))
@@ -219,6 +251,12 @@ public static class KanaConverter
         var pos = 0;
         foreach (var c in source)
         {
+            if (IsUntouched(c, true, false))
+            {
+                buffer[pos++] = c;
+                continue;
+            }
+
             // Space
             if (c == '　')
             {
@@ -299,6 +337,12 @@ public static class KanaConverter
         {
             var c = source[i];
 
+            if (IsUntouched(c, false, true))
+            {
+                buffer[pos++] = c;
+                continue;
+            }
+
             // Space
             if (c == ' ')
             {
@@ -337,57 +381,231 @@ public static class KanaConverter
         return pos;
     }
 
+    // NFKC
+
+    [SkipLocalsInit]
+    private static string ConvertNfkc(ReadOnlySpan<char> source, KanaOption option)
+    {
+        if (source.Length < StackAllocThreshold)
+        {
+            var buffer = (Span<char>)stackalloc char[source.Length * 2];
+            var length = ConvertNfkcInternal(source, buffer, option);
+            return length >= 0 ? new string(buffer[..length]) : ConvertNormalized(source, option);
+        }
+        else
+        {
+            var buffer = ArrayPool<char>.Shared.Rent(source.Length * 2);
+            var length = ConvertNfkcInternal(source, buffer, option);
+            var result = length >= 0 ? new string(buffer, 0, length) : ConvertNormalized(source, option);
+            ArrayPool<char>.Shared.Return(buffer);
+            return result;
+        }
+    }
+
+    private static int ConvertNfkc(ReadOnlySpan<char> source, Span<char> buffer, KanaOption option)
+    {
+        var length = ConvertNfkcInternal(source, buffer, option);
+        return length >= 0 ? length : ConvertInternal(Normalize(source), buffer, option);
+    }
+
+    private static string ConvertNormalized(ReadOnlySpan<char> source, KanaOption option)
+    {
+        var normalized = Normalize(source);
+        return option == 0 ? normalized : Convert(normalized, option);
+    }
+
+    private static string Normalize(ReadOnlySpan<char> source) => new string(source).Normalize(NormalizationForm.FormKC);
+
+    [SkipLocalsInit]
+    private static int ConvertNfkcInternal(ReadOnlySpan<char> source, Span<char> buffer, KanaOption option)
+    {
+        var isSpaceToWide = HasFlag(option, KanaOption.SpaceToWide);
+        var isNumericToWide = HasFlag(option, KanaOption.NumericToWide);
+        var isRomanToWide = HasFlag(option, KanaOption.RomanToWide);
+        var isAsciiToNarrow = HasFlag(option, KanaOption.AsciiToNarrow);
+        var isAsciiToWide = HasFlag(option, KanaOption.AsciiToWide);
+        var isKatakanaToHiragana = HasFlag(option, KanaOption.KatakanaToHiragana);
+        var isHiraganaToKatakana = HasFlag(option, KanaOption.HiraganaToKatakana);
+        var isKatakanaToHankana = HasFlag(option, KanaOption.KatakanaToHankana);
+        var isHiraganaToHankana = HasFlag(option, KanaOption.HiraganaToHankana);
+        var isAsciiUntouched = !isSpaceToWide && !isNumericToWide && !isRomanToWide && !isAsciiToWide;
+        var isKanaUntouched = !isKatakanaToHiragana && !isHiraganaToKatakana && !isKatakanaToHankana && !isHiraganaToHankana;
+
+        var kana = (Span<char>)stackalloc char[1];
+        var pos = 0;
+        for (var i = 0; i < source.Length; i++)
+        {
+            var c = source[i];
+
+            // NFKC
+            bool untouched;
+            if (c < 0x0080)
+            {
+                untouched = isAsciiUntouched;
+            }
+            else if ((c >= 0x4E00) && (c <= 0x9FFF))
+            {
+                untouched = true;
+            }
+            else if (((c >= 0x3041) && (c <= 0x3096)) || ((c >= 0x30A1) && (c <= 0x30FA)))
+            {
+                untouched = isKanaUntouched;
+            }
+            else if ((c >= 0xFF01) && (c <= 0xFF5E))
+            {
+                c = (char)(c - 0xFEE0);
+                untouched = isAsciiUntouched;
+            }
+            else if ((c >= 0xFF61) && (c <= 0xFF9D))
+            {
+                var next = i < source.Length - 1 ? source[i + 1] : (char)0;
+                var written = 0;
+                HankanaToKatakana(c, next, ref i, kana, ref written);
+                c = kana[0];
+                untouched = isKanaUntouched;
+            }
+            else if (c == 0x3000)
+            {
+                c = ' ';
+                untouched = isAsciiUntouched;
+            }
+            else if (IsNfkcInert(c))
+            {
+                untouched = false;
+            }
+            else
+            {
+                return -1;
+            }
+
+            if (untouched)
+            {
+                buffer[pos++] = c;
+                continue;
+            }
+
+            // Space
+            if (isSpaceToWide && (c == ' '))
+            {
+                buffer[pos++] = '　';
+                continue;
+            }
+
+            // Numeric
+            if (isNumericToWide && NumericToWide(c, buffer, ref pos))
+            {
+                continue;
+            }
+
+            // Roman
+            if (isRomanToWide && RomanToWide(c, buffer, ref pos))
+            {
+                continue;
+            }
+
+            // Ascii
+            if (isAsciiToNarrow && AsciiToNarrow(c, buffer, ref pos))
+            {
+                continue;
+            }
+
+            if (isAsciiToWide && AsciiToWide(c, buffer, ref pos))
+            {
+                continue;
+            }
+
+            // Katakana/Hiragana
+            if (isKatakanaToHiragana && KatakanaToHiragana(c, buffer, ref pos))
+            {
+                continue;
+            }
+
+            if (isHiraganaToKatakana && HiraganaToKatakana(c, buffer, ref pos))
+            {
+                continue;
+            }
+
+            // Hankana/Katakana
+            if (isKatakanaToHankana && KatakanaToHankana(c, buffer, ref pos))
+            {
+                continue;
+            }
+
+            // Hankana/Hiragana
+            if (isHiraganaToHankana && HiraganaToHankana(c, buffer, ref pos))
+            {
+                continue;
+            }
+
+            buffer[pos++] = c;
+        }
+
+        return pos;
+    }
+
+    private static bool IsNfkcInert(char c)
+    {
+        var ranges = KanaNfkcData.InertRanges;
+        var low = 0;
+        var high = (ranges.Length / 2) - 1;
+        while (low <= high)
+        {
+            var middle = (low + high) >> 1;
+            if (c < ranges[middle * 2])
+            {
+                high = middle - 1;
+            }
+            else if (c > ranges[(middle * 2) + 1])
+            {
+                low = middle + 1;
+            }
+            else
+            {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
     // ASCII
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     private static bool AsciiToNarrow(char c, Span<char> buffer, ref int pos)
     {
-        // ’
-        if (c == 0x2019)
+        if (c < 0xFF01)
         {
-            buffer[pos++] = '\'';
-            return true;
+            switch (c)
+            {
+                // ‘’
+                case '\u2018' or '\u2019':
+                    buffer[pos++] = '\'';
+                    return true;
+                // “”
+                case '\u201C' or '\u201D':
+                    buffer[pos++] = '"';
+                    return true;
+                // − (the same JIS character as －)
+                case '\u2212':
+                    buffer[pos++] = '-';
+                    return true;
+                // 〜 (the same JIS character as ～)
+                case '\u301C':
+                    buffer[pos++] = '~';
+                    return true;
+                default:
+                    return false;
+            }
         }
 
-        // ”
-        if (c == 0x201D)
-        {
-            buffer[pos++] = '"';
-            return true;
-        }
-
-        // ！
-        if (c == 0xFF01)
-        {
-            buffer[pos++] = '!';
-            return true;
-        }
-
-        // ＃＄％＆
-        if (c < 0xFF03)
-        {
-            return false;
-        }
-
-        if (c <= 0xFF06)
-        {
-            buffer[pos++] = "#$%&"[c - 0xFF03];
-            return true;
-        }
-
-        // （）＊＋，－．／
-        if (c < 0xFF08)
-        {
-            return false;
-        }
-
+        // ！-／
         if (c <= 0xFF0F)
         {
-            buffer[pos++] = "()*+,-./"[c - 0xFF08];
+            buffer[pos++] = (char)(c - 0xFEE0);
             return true;
         }
 
-        // ：；＜＝＞？＠
+        // ：-＠
         if (c < 0xFF1A)
         {
             return false;
@@ -395,38 +613,31 @@ public static class KanaConverter
 
         if (c <= 0xFF20)
         {
-            buffer[pos++] = ":;<=>?@"[c - 0xFF1A];
+            buffer[pos++] = (char)(c - 0xFEE0);
             return true;
         }
 
-        // ［
-        if (c == 0xFF3B)
-        {
-            buffer[pos++] = '[';
-            return true;
-        }
-
-        // ］＾＿｀
-        if (c < 0xFF3D)
+        // ［-｀
+        if (c < 0xFF3B)
         {
             return false;
         }
 
         if (c <= 0xFF40)
         {
-            buffer[pos++] = "]^_`"[c - 0xFF3D];
+            buffer[pos++] = (char)(c - 0xFEE0);
             return true;
         }
 
-        // ｛｜｝
+        // ｛-～
         if (c < 0xFF5B)
         {
             return false;
         }
 
-        if (c <= 0xFF5D)
+        if (c <= 0xFF5E)
         {
-            buffer[pos++] = "{|}"[c - 0xFF5B];
+            buffer[pos++] = (char)(c - 0xFEE0);
             return true;
         }
 
@@ -494,7 +705,14 @@ public static class KanaConverter
 
         if (c <= 0x007E)
         {
-            buffer[pos++] = "｛｜｝￣"[c - 0x007B];
+            buffer[pos++] = "｛｜｝～"[c - 0x007B];
+            return true;
+        }
+
+        // ¥
+        if (c == 0x00A5)
+        {
+            buffer[pos++] = '￥';
             return true;
         }
 
@@ -918,13 +1136,13 @@ public static class KanaConverter
             return true;
         }
 
-        if (c == '゛')
+        if ((c == '゛') || (c == '\u3099'))
         {
             buffer[pos++] = 'ﾞ';
             return true;
         }
 
-        if (c == '゜')
+        if ((c == '゜') || (c == '\u309A'))
         {
             buffer[pos++] = 'ﾟ';
             return true;

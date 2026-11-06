@@ -38,6 +38,10 @@ public enum KanaOption
     // C
     HiraganaToKatakana = 0x02000000,
 
+    // Normalize to NFKC
+    Nfkc = 0x10000000,
+
     Wide = RomanToWide | NumericToWide | AsciiToWide | SpaceToWide | HankanaToKatakana,
-    Narrow = RomanToNarrow | NumericToNarrow | AsciiToNarrow | SpaceToNarrow | KatakanaToHankana
+    Narrow = RomanToNarrow | NumericToNarrow | AsciiToNarrow | SpaceToNarrow | KatakanaToHankana,
+    WidthFold = RomanToNarrow | NumericToNarrow | AsciiToNarrow | SpaceToNarrow | HankanaToKatakana
 }
