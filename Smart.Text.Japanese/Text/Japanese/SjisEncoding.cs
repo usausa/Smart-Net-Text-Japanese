@@ -153,18 +153,27 @@ public static class SjisEncoding
             byteCount += size;
         }
 
-        var target = chars[..sourceLength];
-        var actual = Encoding.GetByteCount(target);
-        var offset = alignment switch
+        var offset = CalcOffset(bytes.Length, byteCount, alignment);
+        var actual = Encoding.GetBytes(chars[..sourceLength], bytes.Slice(offset, byteCount));
+        if (actual != byteCount)
         {
-            FixedAlignment.Left => 0,
-            FixedAlignment.Right => bytes.Length - actual,
-            _ => (bytes.Length - actual) / 2
-        };
+            var moved = CalcOffset(bytes.Length, actual, alignment);
+            bytes.Slice(offset, actual).CopyTo(bytes[moved..]);
+            offset = moved;
+        }
+
         bytes[..offset].Fill(padding);
-        Encoding.GetBytes(target, bytes.Slice(offset, actual));
         bytes[(offset + actual)..].Fill(padding);
     }
+
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    private static int CalcOffset(int length, int count, FixedAlignment alignment) =>
+        alignment switch
+        {
+            FixedAlignment.Left => 0,
+            FixedAlignment.Right => length - count,
+            _ => (length - count) / 2
+        };
 
     // Split
 
