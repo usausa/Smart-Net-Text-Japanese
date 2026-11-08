@@ -162,6 +162,47 @@ public sealed class SjisEncodingTests
     }
 
     [Fact]
+    public void GetLimitStringKeepsSurrogatePairs()
+    {
+        Assert.Equal("a", SjisEncoding.GetLimitString("a😀b", 2));
+        Assert.Equal("a😀", SjisEncoding.GetLimitString("a😀b", 3));
+        Assert.Equal("a😀b", SjisEncoding.GetLimitString("a😀b", 4));
+        Assert.Equal("a", SjisEncoding.GetLimitString("a\uD83D", 1));
+        Assert.Equal("a\uD83D", SjisEncoding.GetLimitString("a\uD83D", 3));
+    }
+
+    [Fact]
+    public void SplitLimitStringKeepsSurrogatePairs()
+    {
+        var parts = new List<string>();
+        foreach (var part in SjisEncoding.SplitLimitString("a😀b𠮷", 3))
+        {
+            parts.Add(part.ToString());
+        }
+
+        Assert.Equal(["a😀", "b𠮷"], parts);
+    }
+
+    [Fact]
+    public void SplitLimitStringStopsAtACharacterThatDoesNotFit()
+    {
+        var parts = new List<string>();
+        foreach (var part in SjisEncoding.SplitLimitString("Aあい", 1))
+        {
+            parts.Add(part.ToString());
+        }
+
+        Assert.Equal(["A"], parts);
+    }
+
+    [Fact]
+    public void FixedBytesKeepSurrogatePairs()
+    {
+        Assert.Equal(SjisEncoding.GetBytes("a "), SjisEncoding.GetFixedBytes("a😀", 2, FixedAlignment.Left));
+        Assert.Equal(SjisEncoding.GetBytes("a😀"), SjisEncoding.GetFixedBytes("a😀", 3, FixedAlignment.Left));
+    }
+
+    [Fact]
     public void GetLimitStringHankana()
     {
         // "ｱAあ" (1 + 1 + 2 bytes)

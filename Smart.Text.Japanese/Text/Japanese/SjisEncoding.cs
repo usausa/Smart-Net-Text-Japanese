@@ -139,20 +139,7 @@ public static class SjisEncoding
             return;
         }
 
-        var sourceLength = 0;
-        var byteCount = 0;
-        while (sourceLength < chars.Length)
-        {
-            var size = IsSingleByte(chars[sourceLength]) ? 1 : 2;
-            if (byteCount + size > bytes.Length)
-            {
-                break;
-            }
-
-            sourceLength++;
-            byteCount += size;
-        }
-
+        var sourceLength = CalcLimitLength(chars, bytes.Length, out var byteCount);
         var offset = CalcOffset(bytes.Length, byteCount, alignment);
         var actual = Encoding.GetBytes(chars[..sourceLength], bytes.Slice(offset, byteCount));
         if (actual != byteCount)
@@ -177,20 +164,24 @@ public static class SjisEncoding
 
     // Split
 
-    internal static int CalcLimitLength(ReadOnlySpan<char> chars, int limit)
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    internal static int CalcLimitLength(ReadOnlySpan<char> chars, int limit) => CalcLimitLength(chars, limit, out _);
+
+    private static int CalcLimitLength(ReadOnlySpan<char> chars, int limit, out int byteCount)
     {
         var length = 0;
-        var byteCount = 0;
+        byteCount = 0;
         while (length < chars.Length)
         {
-            var size = IsSingleByte(chars[length]) ? 1 : 2;
+            var c = chars[length];
+            var size = IsSingleByte(c) ? 1 : 2;
             if (byteCount + size > limit)
             {
                 break;
             }
 
             byteCount += size;
-            length++;
+            length += char.IsHighSurrogate(c) && (length + 1 < chars.Length) && char.IsLowSurrogate(chars[length + 1]) ? 2 : 1;
         }
 
         return length;

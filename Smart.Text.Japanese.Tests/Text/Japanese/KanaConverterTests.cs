@@ -274,4 +274,25 @@ public sealed class KanaConverterTests
         Assert.Equal(Wide, KanaConverter.Convert(Narrow, KanaOption.Wide));
         Assert.Equal(Wide, KanaConverter.ConvertToWide(Narrow));
     }
+
+    [Fact]
+    public void AnUnchangedStringIsReturnedAsIs()
+    {
+        const string text = "漢字 abc 𠮷 한";
+        Assert.Same(text, KanaConverter.Convert(text, KanaOption.HankanaToKatakana));
+        Assert.Same(text, KanaConverter.Convert(text, KanaOption.Nfkc));
+        Assert.Same(text, KanaConverter.ConvertToNarrow(text));
+        Assert.Same("漢字𠮷한", KanaConverter.ConvertToWide("漢字𠮷한"));
+        Assert.NotSame(text, KanaConverter.ConvertToWide(text));
+        Assert.Equal("ア", KanaConverter.Convert("ｱ", KanaOption.HankanaToKatakana));
+    }
+
+    [Fact]
+    public void CharactersAboveTheKanaBlocksPassUnchanged()
+    {
+        Assert.Equal("𠮷ア한\uE000ア", KanaConverter.Convert("𠮷ｱ한\uE000ｱ", KanaOption.HankanaToKatakana));
+        Assert.Equal("𠮷ｱ한", KanaConverter.ConvertToNarrow("𠮷ア한"));
+        Assert.Equal("𠮷ア한", KanaConverter.ConvertToWide("𠮷ｱ한"));
+        Assert.Equal("ABC~", KanaConverter.Convert("ＡＢＣ￣", KanaOption.RomanToNarrow | KanaOption.AsciiToNarrow));
+    }
 }

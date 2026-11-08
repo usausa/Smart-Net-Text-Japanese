@@ -15,8 +15,4 @@
     <PackageTags>smart text japanese</PackageTags>
   </PropertyGroup>
 
-  <ItemGroup>
-    <PackageReference Include="System.Text.Encoding.CodePages" Version="10.0.11" />
-  </ItemGroup>
-
 </Project>

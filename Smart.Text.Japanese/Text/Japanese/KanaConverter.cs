@@ -26,8 +26,13 @@ public static class KanaConverter
         "をぁぃぅぇぉゃゅょっーあいうえおかきくけこさしすせそたちつてとなにぬねのはひふへほまみむめもやゆよらりるれろわん゛゜";
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public static string Convert(string source, KanaOption option) => ConvertString(source, source, option);
+
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public static string Convert(ReadOnlySpan<char> source, KanaOption option) => ConvertString(source, null, option);
+
     [SkipLocalsInit]
-    public static string Convert(ReadOnlySpan<char> source, KanaOption option)
+    private static string ConvertString(ReadOnlySpan<char> source, string? original, KanaOption option)
     {
         if (source.IsEmpty)
         {
@@ -36,20 +41,20 @@ public static class KanaConverter
 
         if (HasFlag(option, KanaOption.Nfkc))
         {
-            return ConvertNfkc(source, option & ~KanaOption.Nfkc);
+            return ConvertNfkc(source, original, option & ~KanaOption.Nfkc);
         }
 
         if (source.Length < StackAllocThreshold)
         {
             var buffer = (Span<char>)stackalloc char[source.Length * 2];
             var length = ConvertInternal(source, buffer, option);
-            return new string(buffer[..length]);
+            return ToResult(buffer[..length], original);
         }
         else
         {
             var buffer = ArrayPool<char>.Shared.Rent(source.Length * 2);
             var length = ConvertInternal(source, buffer, option);
-            var result = new string(buffer, 0, length);
+            var result = ToResult(buffer.AsSpan(0, length), original);
             ArrayPool<char>.Shared.Return(buffer);
             return result;
         }
@@ -72,11 +77,15 @@ public static class KanaConverter
     private static bool HasFlag(KanaOption option, KanaOption value) => (option & value) == value;
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    private static string ToResult(ReadOnlySpan<char> converted, string? original) =>
+        (original is not null) && converted.SequenceEqual(original) ? original : new string(converted);
+
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
     private static bool IsUntouched(char c, bool isAsciiUntouched, bool isKanaUntouched)
     {
         if (c >= 0xA000)
         {
-            return false;
+            return c < 0xFF00;
         }
 
         if (c < 0x0080)
@@ -211,8 +220,13 @@ public static class KanaConverter
     }
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public static string ConvertToNarrow(string source) => ConvertToNarrowString(source, source);
+
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public static string ConvertToNarrow(ReadOnlySpan<char> source) => ConvertToNarrowString(source, null);
+
     [SkipLocalsInit]
-    public static string ConvertToNarrow(ReadOnlySpan<char> source)
+    private static string ConvertToNarrowString(ReadOnlySpan<char> source, string? original)
     {
         if (source.IsEmpty)
         {
@@ -223,13 +237,13 @@ public static class KanaConverter
         {
             var buffer = (Span<char>)stackalloc char[source.Length * 2];
             var length = ConvertToNarrowInternal(source, buffer);
-            return new string(buffer[..length]);
+            return ToResult(buffer[..length], original);
         }
         else
         {
             var buffer = ArrayPool<char>.Shared.Rent(source.Length * 2);
             var length = ConvertToNarrowInternal(source, buffer);
-            var result = new string(buffer, 0, length);
+            var result = ToResult(buffer.AsSpan(0, length), original);
             ArrayPool<char>.Shared.Return(buffer);
             return result;
         }
@@ -295,8 +309,13 @@ public static class KanaConverter
     }
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public static string ConvertToWide(string source) => ConvertToWideString(source, source);
+
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public static string ConvertToWide(ReadOnlySpan<char> source) => ConvertToWideString(source, null);
+
     [SkipLocalsInit]
-    public static string ConvertToWide(ReadOnlySpan<char> source)
+    private static string ConvertToWideString(ReadOnlySpan<char> source, string? original)
     {
         if (source.IsEmpty)
         {
@@ -307,13 +326,13 @@ public static class KanaConverter
         {
             var buffer = (Span<char>)stackalloc char[source.Length * 2];
             var length = ConvertToWideInternal(source, buffer);
-            return new string(buffer[..length]);
+            return ToResult(buffer[..length], original);
         }
         else
         {
             var buffer = ArrayPool<char>.Shared.Rent(source.Length * 2);
             var length = ConvertToWideInternal(source, buffer);
-            var result = new string(buffer, 0, length);
+            var result = ToResult(buffer.AsSpan(0, length), original);
             ArrayPool<char>.Shared.Return(buffer);
             return result;
         }
@@ -384,19 +403,19 @@ public static class KanaConverter
     // NFKC
 
     [SkipLocalsInit]
-    private static string ConvertNfkc(ReadOnlySpan<char> source, KanaOption option)
+    private static string ConvertNfkc(ReadOnlySpan<char> source, string? original, KanaOption option)
     {
         if (source.Length < StackAllocThreshold)
         {
             var buffer = (Span<char>)stackalloc char[source.Length * 2];
             var length = ConvertNfkcInternal(source, buffer, option);
-            return length >= 0 ? new string(buffer[..length]) : ConvertNormalized(source, option);
+            return length >= 0 ? ToResult(buffer[..length], original) : ConvertNormalized(source, original, option);
         }
         else
         {
             var buffer = ArrayPool<char>.Shared.Rent(source.Length * 2);
             var length = ConvertNfkcInternal(source, buffer, option);
-            var result = length >= 0 ? new string(buffer, 0, length) : ConvertNormalized(source, option);
+            var result = length >= 0 ? ToResult(buffer.AsSpan(0, length), original) : ConvertNormalized(source, original, option);
             ArrayPool<char>.Shared.Return(buffer);
             return result;
         }
@@ -408,10 +427,11 @@ public static class KanaConverter
         return length >= 0 ? length : ConvertInternal(Normalize(source), buffer, option);
     }
 
-    private static string ConvertNormalized(ReadOnlySpan<char> source, KanaOption option)
+    private static string ConvertNormalized(ReadOnlySpan<char> source, string? original, KanaOption option)
     {
         var normalized = Normalize(source);
-        return option == 0 ? normalized : Convert(normalized, option);
+        var result = option == 0 ? normalized : Convert(normalized, option);
+        return (original is not null) && String.Equals(result, original, StringComparison.Ordinal) ? original : result;
     }
 
     private static string Normalize(ReadOnlySpan<char> source) => new string(source).Normalize(NormalizationForm.FormKC);
@@ -894,7 +914,7 @@ public static class KanaConverter
             return true;
         }
 
-        // ワ
+        // ヷ
         if (c == 0x30F7)
         {
             buffer[pos++] = 'ﾜ';
@@ -902,7 +922,7 @@ public static class KanaConverter
             return true;
         }
 
-        // ヲ
+        // ヺ
         if (c == 0x30FA)
         {
             buffer[pos++] = 'ｦ';
@@ -971,7 +991,7 @@ public static class KanaConverter
         }
 
         // ｦ-ﾟ
-        if ((c >= 0xFF66) & (c <= 0xFF9F))
+        if ((c >= 0xFF66) && (c <= 0xFF9F))
         {
             buffer[pos++] = ToKatakana[c - 0xFF66];
             return true;
@@ -985,7 +1005,7 @@ public static class KanaConverter
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     private static bool HiraganaToHankana(char c, Span<char> buffer, ref int pos)
     {
-        // ァ-ヶ
+        // ぁ-ゖ
         if ((c >= 0x3041) && (c <= 0x3096))
         {
             var index = c - 0x3041;
@@ -1009,7 +1029,7 @@ public static class KanaConverter
             return true;
         }
 
-        // ワ(ひらがなオプションでも実行)
+        // ヷ(ひらがなオプションでも実行)
         if (c == 0x30F7)
         {
             buffer[pos++] = 'ﾜ';
@@ -1017,7 +1037,7 @@ public static class KanaConverter
             return true;
         }
 
-        // ヲ(ひらがなオプションでも実行)
+        // ヺ(ひらがなオプションでも実行)
         if (c == 0x30FA)
         {
             buffer[pos++] = 'ｦ';
@@ -1086,7 +1106,7 @@ public static class KanaConverter
         }
 
         // ｦ-ﾟ
-        if ((c >= 0xFF66) & (c <= 0xFF9F))
+        if ((c >= 0xFF66) && (c <= 0xFF9F))
         {
             buffer[pos++] = ToHiragana[c - 0xFF66];
             return true;
