@@ -37,8 +37,10 @@ public static class SjisEncoding
     public static int GetByteCount(string s, int index, int count) => Encoding.GetByteCount(s, index, count);
 
     // ReSharper disable once RedundantUnsafeContext
+#pragma warning disable IDE0380
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static unsafe int GetByteCount(char* chars, int count) => Encoding.GetByteCount(chars, count);
+#pragma warning restore IDE0380
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static int GetByteCount(ReadOnlySpan<char> chars) => Encoding.GetByteCount(chars);
@@ -56,7 +58,9 @@ public static class SjisEncoding
     public static int GetBytes(string s, int charIndex, int charCount, byte[] bytes, int byteIndex) => Encoding.GetBytes(s, charIndex, charCount, bytes, byteIndex);
 
     // ReSharper disable once RedundantUnsafeContext
+#pragma warning disable IDE0380
     public static unsafe int GetBytes(char* chars, int charCount, byte* bytes, int byteCount) => Encoding.GetBytes(chars, charCount, bytes, byteCount);
+#pragma warning restore IDE0380
 
     public static int GetBytes(ReadOnlySpan<char> chars, Span<byte> bytes) => Encoding.GetBytes(chars, bytes);
 
@@ -65,7 +69,9 @@ public static class SjisEncoding
     public static int GetCharCount(byte[] bytes, int index, int count) => Encoding.GetCharCount(bytes, index, count);
 
     // ReSharper disable once RedundantUnsafeContext
+#pragma warning disable IDE0380
     public static unsafe int GetCharCount(byte* bytes, int count) => Encoding.GetCharCount(bytes, count);
+#pragma warning restore IDE0380
 
     public static int GetCharCount(ReadOnlySpan<byte> bytes) => Encoding.GetCharCount(bytes);
 
@@ -76,12 +82,16 @@ public static class SjisEncoding
     public static int GetChars(byte[] bytes, int byteIndex, int byteCount, char[] chars, int charIndex) => Encoding.GetChars(bytes, byteIndex, byteCount, chars, charIndex);
 
     // ReSharper disable once RedundantUnsafeContext
+#pragma warning disable IDE0380
     public static unsafe int GetChars(byte* bytes, int byteCount, char* chars, int charCount) => Encoding.GetChars(bytes, byteCount, chars, charCount);
+#pragma warning restore IDE0380
 
     public static int GetChars(ReadOnlySpan<byte> bytes, Span<char> chars) => Encoding.GetChars(bytes, chars);
 
     // ReSharper disable once RedundantUnsafeContext
+#pragma warning disable IDE0380
     public static unsafe string GetString(byte* bytes, int byteCount) => Encoding.GetString(bytes, byteCount);
+#pragma warning restore IDE0380
 
     public static string GetString(ReadOnlySpan<byte> bytes) => Encoding.GetString(bytes);
 
