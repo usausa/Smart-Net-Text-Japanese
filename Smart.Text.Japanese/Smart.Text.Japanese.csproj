@@ -5,7 +5,6 @@
     <AllowUnsafeBlocks>True</AllowUnsafeBlocks>
     <IsAotCompatible>true</IsAotCompatible>
     <RootNamespace>Smart</RootNamespace>
-    <CodeAnalysisRuleSet>..\Analyzers.ruleset</CodeAnalysisRuleSet>
   </PropertyGroup>
 
   <PropertyGroup>
